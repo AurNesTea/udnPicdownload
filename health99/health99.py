@@ -9,6 +9,7 @@ def getHealth99(url, my_header):
     title_list = []
     link_list = []
     picLink_list = []
+    count = 0
     while True:
         try:
             r = requests.get(url, headers=my_header)
@@ -43,13 +44,19 @@ def getHealth99(url, my_header):
                     picLink_list.append(pic)
 
             time.sleep(random.randint(1, 3))    # snap for request next aritcle link
+        count += len(articleLinks)
+        if count / 100 == 0:
+            print(f'目前已取得{count}則文章資訊')
 
-        if 'disabled' in pages[-1]:
-            print('No more next page')
+        if not pages:
+            print('===只有一頁而已哦===')
+            break
+        elif 'disabled' in str(pages[-1]):
+            print('===到底了，沒有下一頁===')
             break
         else:
             url = pages[-1].a.get('href')
-            print('get next page')
+            print('===已取得下一頁連結===')
             
 
     infors = pd.DataFrame({'文章標題': title_list,
@@ -61,8 +68,8 @@ def getHealth99(url, my_header):
 
 my_header = {'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'}
 
-infor_data = pd.DataFrame()
 keyword_list = ['冠心病', '腦中風', '糖尿病', '高血壓', '心血管不良事件']
+infor_data = pd.DataFrame()
 for keyword in keyword_list:
     search_url = f'https://health99.hpa.gov.tw/search?keyword={keyword}'
     infors = getHealth99(search_url, my_header)
