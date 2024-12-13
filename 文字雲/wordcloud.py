@@ -18,9 +18,10 @@ txt=txt.replace(" ","").replace("/","").replace("\"","")
 #載入結巴中文字典
 jieba.set_dictionary('dict.txt')
 terms=[t for t in jieba.cut(txt, cut_all=True) if t not in stops]
+
 #print(Counter(terms))
 mask =cv2.imdecode(np.fromfile('heart.png',dtype=np.uint8),
-    cv2.IMREAD_UNCHANGED)
+                   cv2.IMREAD_UNCHANGED)
 wordcloud=WordCloud(font_path='simsun.ttc', background_color="white", mask=mask)
 img=wordcloud.generate_from_frequencies(frequencies=Counter(terms))
 plt.figure(figsize=(4,4))
