@@ -5,7 +5,8 @@ import time, random
 
 
 health99_url = 'https://health99.hpa.gov.tw'
-def getHealth99(url, my_header):
+def getHealth99(url, my_header, keyword):
+    keyword_list = []
     title_list = []
     link_list = []
     picLink_list = []
@@ -39,6 +40,7 @@ def getHealth99(url, my_header):
                     pic = health99_url + pics[5].get('src')
                     print(title.text)
                     print(pic)
+                    keyword_list.append(keyword)
                     title_list.append(title.text)
                     link_list.append(link)
                     picLink_list.append(pic)
@@ -68,16 +70,19 @@ def getHealth99(url, my_header):
 
 my_header = {'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'}
 
-keyword_list = ['冠心病', '腦中風', '糖尿病', '高血壓', '心血管不良事件']
+# keyword_list = ['冠心病', '腦中風', '糖尿病', '高血壓', '心血管不良事件']
+keyword_list = ['失智', '肌少症']
 infor_data = pd.DataFrame()
 for keyword in keyword_list:
     search_url = f'https://health99.hpa.gov.tw/search?keyword={keyword}'
-    infors = getHealth99(search_url, my_header)
+    infors = getHealth99(search_url, my_header, keyword)
 
     if infor_data.empty:
         infor_data = infors
     else:
         infor_data = pd.concat([infor_data, infors], ignore_index=True) 
+print('===任務已完成===')
 
 # save data
 infor_data.to_csv('tag_articles.csv', index=False)
+print('===資料已存檔===')
