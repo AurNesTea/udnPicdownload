@@ -96,6 +96,10 @@ infor_data.to_csv('tag_articles.csv', index=False)
 
 # file = pd.read_csv('/Users/kevintsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/AI健腦工具/data/失智專區20240910.xlsx - 失智專區.csv')
 # urls = file['Link']
-# tag_list = getTags(urls)
-# print(tag_list)
+# tag_list = getTags(urls, my_header)
 
+# tag_set = set(tag_list)
+# print(tag_set)
+# with open('tag_list.txt', mode='w',encoding='utf-8') as f:
+#     for tag in tag_set:
+#         f.write(f'{tag}, ')
