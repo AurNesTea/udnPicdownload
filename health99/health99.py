@@ -61,7 +61,8 @@ def getHealth99(url, my_header, keyword):
             print('===已取得下一頁連結===')
             
 
-    infors = pd.DataFrame({'文章標題': title_list,
+    infors = pd.DataFrame({'搜尋標籤': keyword_list,
+                           '文章標題': title_list,
                            '文章連結': link_list,
                            '圖片連結': picLink_list})
     return infors
@@ -84,5 +85,5 @@ for keyword in keyword_list:
 print('===任務已完成===')
 
 # save data
-infor_data.to_csv('tag_articles.csv', index=False)
+infor_data.to_csv('Health99_article.csv', index=False)
 print('===資料已存檔===')
