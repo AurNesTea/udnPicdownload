@@ -21,7 +21,7 @@ ax.spines['top'].set_color('none')
 
 
 # 載入資料
-file_path = '/Users/kevintsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/Podcast/程式碼/soundon/datas/analytics-episode-list-下載數.csv'
+file_path = 'analytics-episode-list-下載數.csv'
 data = pd.read_csv(file_path, encoding='utf-8')
 x = data['發佈30天']
 y = data['總下載']
