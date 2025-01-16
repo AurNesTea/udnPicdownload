@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
+
 
 url = 'https://health.udn.com'
 start_url = 'https://health.udn.com/health/cate/10691/123902'
