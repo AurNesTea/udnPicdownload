@@ -39,7 +39,12 @@ try:
             course_type = cl.find(
                 'a', 
                 class_='card__bottom-left-round__link card__bottom-left-round__link--orange'
-            ).text.strip()
+            )
+
+            if course_type:
+                course_type = course_type.text.strip()
+            else:
+                course = '未知類型'
             
             courses.append({
                 '課程名稱': course_name,
@@ -48,9 +53,9 @@ try:
             })
         
         # 判斷是否存在下一頁按鈕
-        next_page_btn = soup.find('a', class_='pagenation__link pagenation__link--last-page')
+        next_page_btn = soup.find('a', class_='pagenation__link pagenation__link--next-page')
         if next_page_btn:
-            next_page_btn_element = driver.find_element(By.CLASS_NAME, 'pagenation__link--last-page')
+            next_page_btn_element = driver.find_element(By.CLASS_NAME, 'pagenation__link--next-page')
             next_page_btn_element.click()
             time.sleep(2)  # 適當延遲，等待頁面加載
         else:
