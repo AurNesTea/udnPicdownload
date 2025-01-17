@@ -18,7 +18,7 @@ driver = webdriver.Chrome(options=options)
 
 # 儲存抓取的資料
 courses = []
-
+page_count = 1
 try:
     driver.get(start_url)
     
@@ -28,6 +28,7 @@ try:
             EC.presence_of_element_located((By.CLASS_NAME, 'splide__slide'))
         )
         
+        print(f'正在抓取第{page_count}頁資訊')
         # 使用 BeautifulSoup 解析頁面
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         
@@ -38,7 +39,7 @@ try:
             course_link = domain_url + cl.a.get('href')
             course_type = cl.find(
                 'a', 
-                class_='card__bottom-left-round__link card__bottom-left-round__link--orange'
+                class_='card__bottom-left-round__link'
             )
 
             if course_type:
@@ -58,6 +59,7 @@ try:
             next_page_btn_element = driver.find_element(By.CLASS_NAME, 'pagenation__link--next-page')
             next_page_btn_element.click()
             time.sleep(2)  # 適當延遲，等待頁面加載
+            page_count += 1
         else:
             break  # 如果沒有下一頁按鈕，結束爬取
     
