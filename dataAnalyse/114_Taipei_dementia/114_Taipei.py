@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # 設定繁體中文字體（請確認你已安裝 Noto Sans TC）
+plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] 
 # plt.rcParams['font.sans-serif'] = ['Noto Sans TC']
-# plt.rcParams['axes.unicode_minus'] = False
+plt.rcParams['axes.unicode_minus'] = False
 
 # 讀取 CSV
 df_prevalence = pd.read_csv("dementia_data.csv")
