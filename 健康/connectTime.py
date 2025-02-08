@@ -19,9 +19,10 @@ while n < 5:
         r = requests.get(url, headers=my_headers)
         t2 = time.time()
         cost_time = t2-t1
-        soup = BeautifulSoup(r.text, 'html.parser')
+        # soup = BeautifulSoup(r.text, 'html.parser')
         print(f'連線至{url}, 共花費 {cost_time} 秒')
-        print(soup.text)
+        # print(soup.text)
+        
         if url == 'https://www.edh.tw/':
             e_time.append(cost_time)
         elif url == 'https://health.tvbs.com.tw/':
