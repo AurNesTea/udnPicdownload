@@ -2,8 +2,9 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas 
-from selenium import webdriver
-from nltk.tokenize import word_tokenize
-import jieba.analyse
-import cv2
 import matplotlib
+from selenium import webdriver
+import webdriver_manager
+# from nltk.tokenize import word_tokenize
+# import jieba.analyse
+# import cv2
