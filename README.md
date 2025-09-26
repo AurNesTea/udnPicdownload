@@ -10,5 +10,6 @@ selenium import webdriver
 webdriver_manager
 nltk.tokenize import word_tokenize
 jieba.analyse
+WordCloud
 cv2
 
