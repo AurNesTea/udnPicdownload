@@ -3,12 +3,12 @@ import random
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+# from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
 # 設定 Selenium Chrome Driver
 options = Options()
-options.add_argument("--headless")  # 無頭模式
+options.add_argument("--headless")
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
@@ -20,7 +20,7 @@ def scrape_content(url):
     """從指定的 URL 抓取內文與作者"""
     try:
         driver.get(url)
-        time.sleep(random.uniform(3, 6))  # 隨機延遲，模擬用戶行為
+        # time.sleep(random.uniform(3, 6))  # 隨機延遲，模擬用戶行為
 
         # 使用 BeautifulSoup 解析頁面
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -61,6 +61,11 @@ def update_csv(file_path, output_path):
             content, author = scrape_content(url)
             df.at[index, '內文'] = content
             df.at[index, '作者'] = author
+
+             # 每30筆儲存一次
+            if (index + 1) % 30 == 0:
+                print(f"已抓取 {index + 1} 筆，進行中途儲存...")
+                df.to_csv(output_path, index=False, encoding='utf-8-sig')
 
     # 保存結果到新 CSV 文件
     df.to_csv(output_path, index=False, encoding='utf-8-sig')
