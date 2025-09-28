@@ -37,6 +37,8 @@ def scrape_content(url):
         # 抓取作者名稱
         author_span = soup.find('span', class_='story__content__author')
         author = author_span.get_text(strip=True) if author_span else "未知作者"
+        print(url)
+        print(author)
 
         return content.strip(), author
     except Exception as e:
