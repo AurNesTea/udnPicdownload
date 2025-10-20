@@ -58,17 +58,8 @@ function createImageCard(image) {
     card.className = 'image-card';
     card.setAttribute('data-image-id', image.id);
     
-    const tags = image.keywords.split('、').map(tag => tag.trim());
-    
     card.innerHTML = `
         <img src="${image.url}" alt="${image.title}" loading="lazy">
-        <div class="image-card-body">
-            <h6 class="image-card-title">${image.title}</h6>
-            <p class="image-card-text">${image.subtitle}</p>
-            <div class="image-tags">
-                ${tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
-            </div>
-        </div>
     `;
     
     card.addEventListener('click', () => openImageModal(image));
