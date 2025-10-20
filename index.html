@@ -103,6 +103,14 @@
             padding: 1rem;
         }
 
+        /* 僅保留圖片：隱藏卡片內的標題、副標與 hashtag */
+        .image-card .image-card-body,
+        .image-card .image-card-title,
+        .image-card .image-card-text,
+        .image-card .image-tags {
+            display: none !important;
+        }
+
         .image-card-title {
             font-size: 14px;
             font-weight: 600;
