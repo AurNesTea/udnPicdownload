@@ -186,16 +186,37 @@ function hideLoading(tabNumber) {
 }
 
 // 下載圖片
-document.getElementById('downloadBtn').addEventListener('click', function() {
+document.getElementById('downloadBtn').addEventListener('click', async function() {
     const imageId = this.getAttribute('data-image-id');
-    const image = document.getElementById('modalImage');
+    const imageUrl = document.getElementById('modalImage').src;
     
-    const link = document.createElement('a');
-    link.href = image.src;
-    link.download = `medical_image_${imageId}.jpg`;
-    link.click();
-    
-    showToast('圖片下載成功！', 'success');
+    try {
+        const response = await fetch(imageUrl, { mode: 'cors', cache: 'no-cache' });
+        if (!response.ok) throw new Error('Failed to fetch image');
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const extension = (blob.type && blob.type.split('/')[1]) || 'jpg';
+        
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = `medical_image_${imageId}.${extension}`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(objectUrl);
+        
+        showToast('圖片下載成功！', 'success');
+    } catch (error) {
+        // 後備方案：若無法以 Blob 下載，則改為在新分頁開啟
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        showToast('瀏覽器限制直下載，已在新分頁開啟圖片。', 'info');
+    }
 });
 
 // 申請表單
