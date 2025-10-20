@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>新醫情圖庫</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --p: #000;
+            --s: #fff;
+            --a: #ffbd59
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
+        }
+
+        .search-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem
+        }
+
+        .search-input {
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            padding: 10px 16px
+        }
+
+        .search-input:focus {
+            border-color: var(--a);
+            box-shadow: 0 0 0 .2rem rgba(255, 189, 89, .25)
+        }
+
+        .nav-tabs {
+            border: none;
+            margin-bottom: 1rem
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            background: var(--p);
+            color: var(--s);
+            border-radius: 10px 10px 0 0;
+            margin-right: 6px;
+            padding: 10px 18px
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: var(--s);
+            color: var(--p)
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--s);
+            color: var(--p);
+            border-bottom: 3px solid var(--a)
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem
+        }
+
+        .image-card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+            cursor: pointer
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block
+        }
+
+        .load-more-btn {
+            background: linear-gradient(45deg, var(--a), #ffd700);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: var(--p)
+        }
+
+        .modal-content {
+            border-radius: 14px
+        }
+
+        .modal-header {
+            border: none
+        }
+
+        .modal-title {
+            position: absolute;
+            left: -9999px
+        }
+
+        .modal-body img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px
+        }
+
+        .application-form {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem
+        }
+
+        .tag {
+            background: var(--a);
+            color: var(--p);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            margin: .125rem;
+            display: inline-block
+        }
+
+        .image-tags {
+            display: flex;
+            flex-wrap: wrap
+        }
+
+        @media (max-width:1200px) {
+            .image-grid {
+                grid-template-columns: repeat(4, 1fr)
+            }
+        }
+
+        @media (max-width:992px) {
+            .image-grid {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+
+        @media (max-width:768px) {
+            .image-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .search-container {
+                padding: 1rem
+            }
+
+            .nav-tabs .nav-link {
+                padding: 8px 12px;
+                font-size: 14px
+            }
+        }
+
+        @media (max-width:576px) {
+            .image-grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem
+        }
+
+        .spinner-border {
+            color: var(--a)
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid py-4">
+        <div class="row mb-3">
+            <div class="col-12 text-center">
+                <h1 class="display-6 fw-bold text-dark mb-1">新醫情圖庫</h1>
+                <p class="text-muted mb-0">當代醫療，新聞紀錄，供其他媒體、學術研究使用</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="search-container">
+                    <div class="row">
+                        <div class="col-md-8 mx-auto">
+                            <div class="input-group">
+                                <input id="searchInput" class="form-control search-input" placeholder="請輸入要查詢的主題關鍵字">
+                                <button class="btn btn-outline-secondary" id="searchBtn" type="button"><i
+                                        class="bi bi-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs justify-content-center" id="imageTabs" role="tablist"></ul>
+            </div>
+        </div>
+
+        <div class="tab-content" id="imageTabsContent"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">圖片詳情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-6">
+                            <div class="p-4 d-flex align-items-center justify-content-center" style="height:100%">
+                                <img id="modalImage" src="" alt="" class="img-fluid rounded">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 h-100 d-flex flex-column">
+                                <div class="mb-3">
+                                    <h4 class="fw-bold text-dark" id="modalTitle">標題</h4>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-secondary">圖說</h6>
+                                    <p id="modalDescription" class="text-muted mb-0"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-secondary">關鍵字</h6>
+                                    <div id="modalTags" class="image-tags"></div>
+                                </div>
+                                <div class="application-form" id="applicationForm" style="display:none">
+                                    <h6 class="fw-bold text-danger">使用限制</h6>
+                                    <p class="text-muted">此照片需要申請使用，請填寫申請表單。</p>
+                                    <div class="d-grid gap-2"><button class="btn btn-warning" id="applyBtn"><i
+                                                class="bi bi-file-earmark-text me-2"></i>填寫申請表單</button></div>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-2"><button type="button" class="btn btn-primary"
+                                            id="downloadBtn"><i class="bi bi-download me-2"></i>下載圖片</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /* === Config + State === */
+        const CFG = {
+            id: '1U98cnItKs0hkKLY-l7kGuKxIM0Mf6DBRPSzBHxTI0EY',
+            gid: '1594065956',
+            tabs: ['健康促進', '社會連結', '世代共融', '友善環境', '永續發展'],
+            // 明確映射，避免 indexOf 因空白/全形差異而失敗
+            map: { '健康促進': 1, '社會連結': 2, '世代共融': 3, '友善環境': 4, '永續發展': 5 }
+        };
+        const S = { data: { 1: [], 2: [], 3: [], 4: [], 5: [] }, loaded: false, count: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, per: 20 };
+
+        const $ = s => document.querySelector(s);
+        const el = (t, a = {}) => Object.assign(document.createElement(t), a);
+
+        /* === UI Builders === */
+        function buildTabs() {
+            const ul = $('#imageTabs'), content = $('#imageTabsContent');
+            CFG.tabs.forEach((name, i) => {
+                const n = i + 1, id = `tab${n}`;
+                const li = el('li', { className: 'nav-item', role: 'presentation' });
+                const btn = el('button', { className: 'nav-link' + (i ? '' : ' active'), id: `${id}-tab`, type: 'button', role: 'tab', 'aria-controls': id, 'aria-selected': !i, 'data-bs-toggle': 'tab', 'data-bs-target': `#${id}`, textContent: name });
+                li.appendChild(btn); ul.appendChild(li);
+                const pane = el('div', { className: 'tab-pane fade' + (i ? '' : ' show active'), id, role: 'tabpanel' });
+                pane.innerHTML = `
+        <div class="image-grid" id="grid${n}"></div>
+        <div class="text-center">
+          <button class="btn load-more-btn" id="loadMore${n}" data-tab="${n}">
+            <i class="bi bi-plus-circle me-2"></i>觀看更多
+          </button>
+        </div>
+        <div class="loading" id="loading${n}">
+          <div class="spinner-border" role="status"><span class="visually-hidden">載入中...</span></div>
+          <p class="mt-2 text-muted">載入中...</p>
+        </div>`;
+                content.appendChild(pane);
+            });
+        }
+
+        /* 只顯示圖片的卡片模板（列表狀態） */
+        function cardTpl(it) {
+            return `
+      <div class="image-card" data-image-id="${it.id}">
+        <img src="${it.url}" alt="${it.title}" loading="lazy">
+      </div>`;
+        }
+
+        /* === Data === */
+        async function load() {
+            globLoading(1);
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${CFG.id}/export?format=csv&gid=${CFG.gid}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(res.status);
+                parse(await res.text());
+                S.loaded = true;
+                loadTab(1); // 初次載入分頁1
+                toast('資料載入成功！', 'success');
+            } catch (e) {
+                console.error(e);
+                toast('資料載入失敗，請稍後再試', 'danger');
+            } finally { globLoading(0); }
+        }
+
+        function normalizeTheme(t) {
+            return String(t || '')
+                .replace(/\u3000/g, ' ')   // 全形空白 → 半形
+                .replace(/\s+/g, ' ')      // 多重空白壓一個
+                .trim();
+        }
+
+        function parse(csv) {
+            const lines = csv.split('\n');
+            for (let i = 1; i < lines.length; i++) {
+                const v = csvLine(lines[i]);
+                if (v.length < 7) continue;
+
+                let [mainId, id, theme, subtitle, url, keywords, restriction] = v;
+                theme = normalizeTheme(theme);
+                if (!/^https?:/.test(url)) continue;
+
+                const tab = CFG.map[theme];
+                if (!tab) continue;
+
+                const item = {
+                    id: `${mainId}${id}`,
+                    url,
+                    title: theme,
+                    subtitle,
+                    keywords: keywords || '',
+                    restriction: restriction || '無限制'
+                };
+                S.data[tab].push(item);
+            }
+        }
+
+        function csvLine(line) {
+            const a = []; let cur = '', q = false;
+            for (let i = 0; i < line.length; i++) {
+                const c = line[i];
+                if (c == '"') { q = !q; }
+                else if (c == ',' && !q) { a.push(cur.trim()); cur = ''; }
+                else { cur += c; }
+            }
+            a.push(cur.trim());
+            return a.map(x => x.replace(/^"|"$/g, ''));
+        }
+
+        /* === Render === */
+        function loadTab(n) {
+            if (!S.loaded) return;
+            const g = $(`#grid${n}`), arr = S.data[n] || [], st = S.count[n], ed = Math.min(st + S.per, arr.length);
+            showLoading(n, 1);
+            setTimeout(() => {
+                for (let i = st; i < ed; i++) g.insertAdjacentHTML('beforeend', cardTpl(arr[i]));
+                S.count[n] = ed;
+                showLoading(n, 0);
+                updMore(n);
+            }, 200);
+        }
+
+        function updMore(n) {
+            const btn = $(`#loadMore${n}`), arr = S.data[n] || [];
+            if (!btn) return;
+            const left = arr.length - S.count[n];
+            btn.style.display = left > 0 ? 'block' : 'none';
+            if (left > 0) btn.innerHTML = `<i class="bi bi-plus-circle me-2"></i>載入更多圖片 (還有 ${left} 張)`;
+        }
+
+        function showLoading(n, on) { const e = $(`#loading${n}`); if (e) e.style.display = on ? 'block' : 'none'; }
+
+        function globLoading(on) {
+            let d = $('#globalLoading');
+            if (on) {
+                if (d) return;
+                d = el('div', { id: 'globalLoading', className: 'position-fixed top-50 start-50 translate-middle text-center', style: 'z-index:9999' });
+                d.innerHTML = '<div class="bg-white p-4 rounded shadow"><div class="spinner-border text-primary mb-3" role="status"><span class="visually-hidden">載入中...</span></div><p class="mb-0">正在載入圖片資料...</p></div>';
+                document.body.appendChild(d);
+            } else d?.remove();
+        }
+
+        /* === Modal === */
+        function openModal(it) {
+            $('#modalImage').src = it.url;
+            $('#modalImage').alt = it.title;
+            $('#imageModalLabel').textContent = $('#modalTitle').textContent = it.title;
+            $('#modalDescription').textContent = it.subtitle || '';
+            const tags = (it.keywords || '').split('、').map(t => t.trim()).filter(Boolean).map(t => `<span class="tag">#${t}</span>`).join('');
+            $('#modalTags').innerHTML = tags;
+            const need = it.restriction === '需要申請';
+            $('#applicationForm').style.display = need ? 'block' : 'none';
+            $('#applyBtn').dataset.imageId = it.id;
+            $('#downloadBtn').dataset.imageId = it.id;
+            new bootstrap.Modal($('#imageModal')).show();
+        }
+
+        /* === Search === */
+        function setupSearch() {
+            const input = $('#searchInput');
+            const go = () => {
+                const q = input.value.trim().toLowerCase();
+                if (!q) { resetAll(); return; }
+                for (let n = 1; n <= 5; n++) searchTab(n, q);
+            };
+            $('#searchBtn').addEventListener('click', go);
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') go(); });
+        }
+
+        function searchTab(n, q) {
+            if (!S.loaded) return;
+            const g = $(`#grid${n}`), arr = S.data[n] || [];
+            g.innerHTML = '';
+            arr.filter(it => (`${it.title} ${it.subtitle} ${it.keywords}`.toLowerCase().includes(q)))
+                .forEach(it => g.insertAdjacentHTML('beforeend', cardTpl(it)));
+            $(`#loadMore${n}`).style.display = 'none';
+        }
+
+        function resetAll() {
+            for (let n = 1; n <= 5; n++) {
+                const g = $(`#grid${n}`); g.innerHTML = '';
+                S.count[n] = 0;
+                $(`#loadMore${n}`).style.display = 'block';
+            }
+            const a = document.querySelector('.nav-link.active');
+            const n = a.getAttribute('data-bs-target').replace('#tab', '');
+            loadTab(n);
+        }
+
+        /* === Events === */
+        function bind() {
+            // 分頁切換 → 首次進入就載入
+            document.querySelectorAll('[data-bs-toggle="tab"]').forEach(b =>
+                b.addEventListener('shown.bs.tab', e => {
+                    const n = e.target.getAttribute('data-bs-target').replace('#tab', '');
+                    if (!S.count[n]) loadTab(n);
+                })
+            );
+
+            // 載入更多
+            for (let i = 1; i <= 5; i++) {
+                $(`#loadMore${i}`).addEventListener('click', () => loadTab(i));
+            }
+
+            // 卡片委派 → 打開 Modal
+            document.addEventListener('click', e => {
+                const c = e.target.closest('.image-card');
+                if (!c) return;
+                const id = c.dataset.imageId;
+                for (let t = 1; t <= 5; t++) {
+                    const it = (S.data[t] || []).find(x => x.id === id);
+                    if (it) { openModal(it); break; }
+                }
+            });
+
+            // 下載 / 申請
+            $('#downloadBtn').addEventListener('click', () => {
+                const id = $('#downloadBtn').dataset.imageId, src = $('#modalImage').src;
+                const a = el('a', { href: src, download: `medical_image_${id}.jpg` }); document.body.appendChild(a); a.click(); a.remove();
+                toast('圖片下載成功！', 'success');
+            });
+            $('#applyBtn').addEventListener('click', () => {
+                const id = $('#applyBtn').dataset.imageId;
+                toast(`已記錄圖片編號 ${id}，請聯繫管理員填寫申請表單`, 'warning');
+            });
+        }
+
+        function toast(msg, type = 'info') {
+            const t = el('div', { className: `toast align-items-center text-white bg-${type} border-0`, role: 'alert', 'aria-live': 'assertive', 'aria-atomic': 'true' });
+            t.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+            document.body.appendChild(t);
+            new bootstrap.Toast(t).show();
+            t.addEventListener('hidden.bs.toast', () => t.remove());
+        }
+
+        /* === Boot === */
+        document.addEventListener('DOMContentLoaded', () => {
+            buildTabs();
+            setupSearch();
+            bind();
+            load();
+        });
+    </script>
+</body>
+</html>
