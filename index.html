@@ -248,10 +248,11 @@
 <body>
     <div class="container-fluid py-4">
         <div class="row mb-4">
-            <div class="col-12 text-center">
-                <div class="d-flex flex-column align-items-center"></div>
+            <div class="col-12 text-center d-flex flex-column align-items-center">
                     <h1 class="display-4 fw-bold text-dark mb-2">新醫情圖庫</h1>
-                    <p class="lead text-muted">當代醫療，新聞紀錄，供其他媒體、學術研究使用</p>
+                    <p class="lead text-muted">
+                        當代醫療，新聞紀錄，供其他媒體、學術研究使用
+                    </p>
                 </div>
             </div>
         </div>
@@ -421,6 +422,61 @@
             </div>
         </div>
     </div>
+
+    <!-- Google 問卷 Modal -->
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">圖片使用申請表單</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-8">
+                            <div style="height: 600px;">
+                                <iframe id="googleForm" 
+                                        src="https://docs.google.com/forms/d/e/1FAIpQLSd7mHTJ9dPWKkUMHFvXlQYumqnqILuKe0YVJ0hrlZg1ywfjiw/viewform?usp=header" 
+                                        width="100%" 
+                                        height="100%" 
+                                        frameborder="0" 
+                                        marginheight="0" 
+                                        marginwidth="0">
+                                    載入中...
+                                </iframe>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4 h-100 d-flex flex-column">
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-primary">申請說明</h6>
+                                    <p class="text-muted small">
+                                        請填寫完整的申請表單，我們將在收到申請後盡快處理您的請求。
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-success">申請流程</h6>
+                                    <ol class="text-muted small">
+                                        <li>填寫申請表單</li>
+                                        <li>提交申請</li>
+                                        <li>等待審核</li>
+                                        <li>收到通知後即可下載</li>
+                                    </ol>
+                                </div>
+                                <div class="mt-auto">
+                                    <div class="alert alert-info small">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        填寫完成後，請關閉此視窗並重新點擊「申請下載」按鈕。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="data.js"></script>
     <script src="app.js"></script>

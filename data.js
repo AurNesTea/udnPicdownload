@@ -1,9 +1,9 @@
 // 圖片資料 - 根據Excel檔案「作品編號關鍵字表」的實際資料
 const imageData = {
     1: [ // 健康促進 - 完整96張圖片
-        { id: "A001", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fd6d776a99afbc2655dcb9c5a.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "無限制" },
-        { id: "A002", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F82cf20b81141225c97feb7ba.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "無限制" },
-        { id: "A003", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff54e0d063ed36b76054fa06d.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "無限制" },
+        { id: "A001", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fd6d776a99afbc2655dcb9c5a.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "需要申請" },
+        { id: "A002", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F82cf20b81141225c97feb7ba.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "需要申請" },
+        { id: "A003", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff54e0d063ed36b76054fa06d.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "需要申請" },
         { id: "A004", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F35ae32928d22fb8c8bc53eb3.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "無限制" },
         { id: "A005", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F6595df76d989b1bbe30f09e1.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "無限制" },
         { id: "A006", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F7b5c24ac690831ddc9002a7b.jpeg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "", restriction: "無限制" },

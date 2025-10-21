@@ -79,11 +79,27 @@ function openImageModal(image) {
     tagsContainer.innerHTML = tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
     
     const applicationForm = document.getElementById('applicationForm');
+    const downloadBtn = document.getElementById('downloadBtn');
+    
     if (image.restriction === '需要申請') {
-        applicationForm.style.display = 'block';
-        document.getElementById('applyBtn').setAttribute('data-image-id', image.id);
+        // 檢查是否已經申請過
+        const hasApplied = checkApplicationStatus(image.id);
+        
+        if (hasApplied) {
+            // 已申請，顯示下載按鈕
+            applicationForm.style.display = 'none';
+            downloadBtn.style.display = 'block';
+            downloadBtn.innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
+        } else {
+            // 未申請，顯示申請按鈕
+            applicationForm.style.display = 'block';
+            document.getElementById('applyBtn').setAttribute('data-image-id', image.id);
+            downloadBtn.style.display = 'none';
+        }
     } else {
         applicationForm.style.display = 'none';
+        downloadBtn.style.display = 'block';
+        downloadBtn.innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
     }
     
     document.getElementById('downloadBtn').setAttribute('data-image-id', image.id);
@@ -219,11 +235,64 @@ document.getElementById('downloadBtn').addEventListener('click', async function(
     }
 });
 
+// 檢查申請狀態
+function checkApplicationStatus(imageId) {
+    const appliedImages = JSON.parse(localStorage.getItem('appliedImages') || '[]');
+    return appliedImages.includes(imageId);
+}
+
+// 標記圖片為已申請
+function markImageAsApplied(imageId) {
+    const appliedImages = JSON.parse(localStorage.getItem('appliedImages') || '[]');
+    if (!appliedImages.includes(imageId)) {
+        appliedImages.push(imageId);
+        localStorage.setItem('appliedImages', JSON.stringify(appliedImages));
+    }
+}
+
 // 申請表單
 document.getElementById('applyBtn').addEventListener('click', function() {
     const imageId = this.getAttribute('data-image-id');
-    showToast(`已記錄圖片編號 ${imageId}，請聯繫管理員填寫申請表單`, 'info');
+    
+    // 開啟 Google 問卷 Modal
+    const formModal = new bootstrap.Modal(document.getElementById('formModal'));
+    formModal.show();
+    
+    // 記錄申請的圖片 ID
+    sessionStorage.setItem('pendingApplication', imageId);
+    
+    showToast(`已開啟申請表單，請填寫完整資訊`, 'info');
 });
+
+// 監聽表單 Modal 關閉事件
+document.getElementById('formModal').addEventListener('hidden.bs.modal', function() {
+    const pendingImageId = sessionStorage.getItem('pendingApplication');
+    if (pendingImageId) {
+        // 模擬表單填寫完成（實際應用中需要更複雜的驗證邏輯）
+        markImageAsApplied(pendingImageId);
+        sessionStorage.removeItem('pendingApplication');
+        
+        showToast('申請表單已提交，現在可以下載圖片了！', 'success');
+        
+        // 重新開啟圖片 Modal 以更新按鈕狀態
+        setTimeout(() => {
+            const currentImage = getCurrentImageById(pendingImageId);
+            if (currentImage) {
+                openImageModal(currentImage);
+            }
+        }, 1000);
+    }
+});
+
+// 根據 ID 取得圖片資料
+function getCurrentImageById(imageId) {
+    for (let tabNumber = 1; tabNumber <= 5; tabNumber++) {
+        const images = imageData[tabNumber] || [];
+        const image = images.find(img => img.id === imageId);
+        if (image) return image;
+    }
+    return null;
+}
 
 // 顯示提示訊息
 function showToast(message, type = 'info') {
