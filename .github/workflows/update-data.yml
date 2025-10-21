@@ -33,7 +33,7 @@ jobs:
     - name: 檢查檔案變更
       id: check-changes
       run: |
-        if git diff --quiet src/data.js; then
+        if git diff --quiet data.js; then
           echo "has-changes=false" >> $GITHUB_OUTPUT
           echo "📋 沒有資料變更"
         else
@@ -46,7 +46,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add src/data.js
+        git add data.js
         git commit -m "🤖 自動更新圖庫資料 - $(date '+%Y-%m-%d %H:%M:%S')"
         git push
     

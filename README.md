@@ -29,9 +29,16 @@
 ## 🚀 快速開始
 
 ### 部署使用
-1. 將 `src/` 目錄中的所有檔案上傳到 HTTPS 伺服器
-2. 使用 `src/index.html` 作為主頁面
-3. 系統會自動載入 `src/data.js` 和 `src/app.js`
+1. 將 `index.html`、`data.js`、`app.js` 檔案上傳到 HTTPS 伺服器
+2. 使用 `index.html` 作為主頁面
+3. 系統會自動載入 `data.js` 和 `app.js`
+
+### GitHub Pages 部署
+1. 在 GitHub 專案頁面，進入 Settings > Pages
+2. 選擇 "Deploy from a branch"
+3. 選擇 "main" 分支和 "/ (root)" 資料夾
+4. 點擊 Save，等待部署完成
+5. 您的網站將在 `https://您的用戶名.github.io/udnPicdownload/` 上線
 
 ### 資料更新
 ```bash
@@ -52,10 +59,9 @@ python update_data_final.py
 
 ```
 udnPicdownload/
-├── src/                    # 主要程式檔案
-│   ├── index.html          # 主頁面檔案
-│   ├── data.js             # 圖片資料檔案
-│   └── app.js              # JavaScript 邏輯檔案
+├── index.html              # 主頁面檔案
+├── data.js                 # 圖片資料檔案
+├── app.js                  # JavaScript 邏輯檔案
 ├── scripts/                # 更新腳本
 │   ├── update_data_final.py    # 主要更新腳本（推薦使用）
 │   ├── update_data.py          # 原始更新腳本
@@ -63,7 +69,6 @@ udnPicdownload/
 │   ├── update.sh               # Linux/macOS 執行腳本
 │   └── update.bat              # Windows 執行腳本
 ├── docs/                   # 文件檔案
-│   ├── README.md           # 完整專案說明文件
 │   ├── 問卷需求.txt        # 問卷需求文件
 │   └── 資料更新需求.txt    # 資料更新需求文件
 ├── requirements/           # 依賴檔案
@@ -142,12 +147,12 @@ udnPicdownload/
 
 ### **更新圖片資料**：
 1. 使用 `scripts/update_data_final.py` 腳本自動更新
-2. 或手動修改 `src/data.js` 檔案
+2. 或手動修改 `data.js` 檔案
 3. 保持 JavaScript 物件結構不變
 4. 重新上傳檔案
 
 ### **修改功能邏輯**：
-1. 編輯 `src/app.js` 檔案
+1. 編輯 `app.js` 檔案
 2. 保持函數名稱和事件綁定不變
 3. 重新上傳檔案
 
@@ -218,7 +223,7 @@ udnPicdownload/
 3. **緊急更新**: 使用本機腳本手動更新
 
 ### **注意事項**：
-- 每次更新會自動備份現有 `src/data.js` 檔案到 `backups/` 目錄
+- 每次更新會自動備份現有 `data.js` 檔案到 `backups/` 目錄
 - 更新過程會產生詳細日誌到 `logs/` 目錄
 - 建議在更新前檢查 Google Sheets 資料完整性
 

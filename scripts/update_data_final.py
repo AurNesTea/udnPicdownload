@@ -27,7 +27,7 @@ class DataUpdater:
     def __init__(self):
         self.sheets_url = "https://docs.google.com/spreadsheets/d/1U98cnItKs0hkKLY-l7kGuKxIM0Mf6DBRPSzBHxTI0EY/edit?gid=1594065956#gid=1594065956"
         self.csv_url = "https://docs.google.com/spreadsheets/d/1U98cnItKs0hkKLY-l7kGuKxIM0Mf6DBRPSzBHxTI0EY/export?format=csv&gid=1594065956"
-        self.output_file = "../src/data.js"
+        self.output_file = "../data.js"
         
     def fetch_data_from_sheets(self) -> List[Dict[str, Any]]:
         """從 Google Sheets 獲取資料"""
