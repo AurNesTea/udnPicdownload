@@ -427,8 +427,8 @@
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="formModalLabel">圖片使用申請表單</h5>
+                <div class="modal-header" style="padding: 0.75rem 1rem;">
+                    <h5 class="modal-title" id="formModalLabel" style="font-size: 1rem;">圖片使用申請表單</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
@@ -436,12 +436,13 @@
                         <div class="col-md-8">
                             <div style="height: 600px;">
                                 <iframe id="googleForm" 
-                                        src="https://docs.google.com/forms/d/e/1FAIpQLSd7mHTJ9dPWKkUMHFvXlQYumqnqILuKe0YVJ0hrlZg1ywfjiw/viewform?usp=header" 
+                                        src="https://docs.google.com/forms/d/e/1FAIpQLSd7mHTJ9dPWKkUMHFvXlQYumqnqILuKe0YVJ0hrlZg1ywfjiw/viewform?embedded=true&usp=header" 
                                         width="100%" 
                                         height="100%" 
                                         frameborder="0" 
                                         marginheight="0" 
-                                        marginwidth="0">
+                                        marginwidth="0"
+                                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox">
                                     載入中...
                                 </iframe>
                             </div>
@@ -451,16 +452,14 @@
                                 <div class="mb-3">
                                     <h6 class="fw-bold text-primary">申請說明</h6>
                                     <p class="text-muted small">
-                                        請填寫完整的申請表單，我們將在收到申請後盡快處理您的請求。
+                                        因應照片授權人要求，為避免該照片被濫用，請填寫完整的申請表單，我們用以紀錄圖片使用情況，確保圖片被合法使用。
                                     </p>
                                 </div>
                                 <div class="mb-3">
                                     <h6 class="fw-bold text-success">申請流程</h6>
                                     <ol class="text-muted small">
                                         <li>填寫申請表單</li>
-                                        <li>提交申請</li>
-                                        <li>等待審核</li>
-                                        <li>收到通知後即可下載</li>
+                                        <li>提交申請後即可下載</li>                                        
                                     </ol>
                                 </div>
                                 <div class="mt-auto">
