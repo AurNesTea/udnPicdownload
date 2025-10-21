@@ -92,13 +92,41 @@ class DataUpdater:
                         """將亂碼字串解碼為正確的繁體中文"""
                         if not text:
                             return text
-                        try:
-                            # 嘗試將亂碼解碼為正確的中文
-                            # 亂碼通常是 UTF-8 被誤解為 Latin-1 造成的
-                            decoded = text.encode('latin-1').decode('utf-8')
-                            return decoded
-                        except (UnicodeEncodeError, UnicodeDecodeError):
-                            # 如果解碼失敗，返回原始文字
+                        
+                        # 檢查是否包含亂碼字元
+                        if any(ord(char) > 127 for char in text):
+                            try:
+                                # 方法1: 嘗試將亂碼解碼為正確的中文
+                                # 亂碼通常是 UTF-8 被誤解為 Latin-1 造成的
+                                decoded = text.encode('latin-1').decode('utf-8')
+                                return decoded
+                            except (UnicodeEncodeError, UnicodeDecodeError):
+                                try:
+                                    # 方法2: 嘗試其他編碼組合
+                                    decoded = text.encode('cp1252').decode('utf-8')
+                                    return decoded
+                                except (UnicodeEncodeError, UnicodeDecodeError):
+                                    try:
+                                        # 方法3: 嘗試 ISO-8859-1 到 UTF-8
+                                        decoded = text.encode('iso-8859-1').decode('utf-8')
+                                        return decoded
+                                    except (UnicodeEncodeError, UnicodeDecodeError):
+                                        # 方法4: 手動替換常見的亂碼模式
+                                        # 這些是從實際資料中觀察到的亂碼模式
+                                        replacements = {
+                                            "æ¢æ§çãä¸é«ãç³å°¿çãé«è¡å£ãå¿è¡ç®¡ç¾çãå¨æ°å¥åº·ä¿éãæ´åç§è­·ãæ¢æ§å±ç": "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病",
+                                            "æ¢æ§çãä¸é«ãç³å°¿çãé«è¡å£ãå¿è¡ç®¡ç¾çãå¨æ°å¥åº·ä¿éãæ´åç§è­·ãæ¢æ§å±ç": "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病"
+                                        }
+                                        
+                                        # 檢查是否有已知的亂碼模式
+                                        for garbled, correct in replacements.items():
+                                            if garbled in text:
+                                                return text.replace(garbled, correct)
+                                        
+                                        # 如果所有方法都失敗，返回原始文字
+                                        return text
+                        else:
+                            # 如果沒有亂碼字元，直接返回
                             return text
                     
                     theme = decode_text(raw_theme)
@@ -222,12 +250,41 @@ const imageData = {{
             
             logger.info(f"資料更新完成！已更新 {self.output_file}")
             
-            # 6. 驗證檔案
+            # 6. 修復亂碼
+            self.fix_garbled_text()
+            
+            # 7. 驗證檔案
             self.validate_output_file()
             
         except Exception as e:
             logger.error(f"資料更新失敗: {e}")
             raise
+    
+    def fix_garbled_text(self):
+        """修復 data.js 檔案中的亂碼"""
+        try:
+            # 讀取檔案內容
+            with open(self.output_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 定義亂碼替換規則
+            replacements = {
+                "æ\x85¢æ\x80§ç\x97\x85ã\x80\x81ä¸\x89é«\x98ã\x80\x81ç³\x96å°¿ç\x97\x85ã\x80\x81é«\x98è¡\x80å£\x93ã\x80\x81å¿\x83è¡\x80ç®¡ç\x96¾ç\x97\x85ã\x80\x81å\x85¨æ°\x91å\x81¥åº·ä¿\x9dé\x9aªã\x80\x81æ\x95´å\x90\x88ç\x85§è\xad·ã\x80\x81æ\x85¢æ\x80§å\x85±ç\x97": "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病"
+            }
+            
+            # 執行替換
+            original_content = content
+            for garbled, correct in replacements.items():
+                content = content.replace(garbled, correct)
+            
+            # 如果有變更，寫回檔案
+            if content != original_content:
+                with open(self.output_file, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                logger.info("已修復亂碼文字")
+            
+        except Exception as e:
+            logger.warning(f"修復亂碼時發生錯誤: {e}")
     
     def validate_output_file(self):
         """驗證生成的 data.js 檔案"""

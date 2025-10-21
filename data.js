@@ -1,16 +1,16 @@
 // 圖片資料 - 根據Google Sheets「新醫情圖庫資料表」的實際資料
-// 最後更新時間: 2025年10月21日 17:26:41
+// 最後更新時間: 2025年10月21日 17:38:10
 // 自動生成，請勿手動修改
 
 const imageData = {
     1: [ // 健康促進 - 96張圖片
-        { id: "A001", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fd6d776a99afbc2655dcb9c5a.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、老人憂鬱症", restriction: "可直接使用" },
-        { id: "A002", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F82cf20b81141225c97feb7ba.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "æ¢æ§çãä¸é«ãç³å°¿çãé«è¡å£ãå¿è¡ç®¡ç¾çãå¨æ°å¥åº·ä¿éªãæ´åç§è­·ãæ¢æ§å±ç", restriction: "可直接使用" },
-        { id: "A003", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff54e0d063ed36b76054fa06d.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、慢性共病、全民健康保險、", restriction: "可直接使用" },
+        { id: "A001", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fd6d776a99afbc2655dcb9c5a.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、老人憂鬱症", restriction: "需要申請" },
+        { id: "A002", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F82cf20b81141225c97feb7ba.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病", restriction: "需要申請" },
+        { id: "A003", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff54e0d063ed36b76054fa06d.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、慢性共病、全民健康保險、", restriction: "需要申請" },
         { id: "A004", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F35ae32928d22fb8c8bc53eb3.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、全民健康保險、健保快易通、健康存摺、智慧醫療", restriction: "可直接使用" },
         { id: "A005", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F6595df76d989b1bbe30f09e1.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "全民健康保險、整合照護、慢性共病、長期照顧、長照服務、外籍看護工", restriction: "可直接使用" },
-        { id: "A006", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F7b5c24ac690831ddc9002a7b.jpeg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "æ¢æ§çãä¸é«ãç³å°¿çãé«è¡å£ãå¿è¡ç®¡ç¾çãå¨æ°å¥åº·ä¿éªãæ´åç§è­·ãæ¢æ§å±ç", restriction: "可直接使用" },
-        { id: "A007", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fde41370fc89b7907c4d17ea1.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "æ¢æ§çãä¸é«ãç³å°¿çãé«è¡å£ãå¿è¡ç®¡ç¾çãå¨æ°å¥åº·ä¿éªãæ´åç§è­·ãæ¢æ§å±ç", restriction: "可直接使用" },
+        { id: "A006", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F7b5c24ac690831ddc9002a7b.jpeg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病", restriction: "可直接使用" },
+        { id: "A007", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fde41370fc89b7907c4d17ea1.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病", restriction: "可直接使用" },
         { id: "A008", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fb0798a2ba573990a9fbddcc6.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "全民健康保險、慢性病、外籍看護工、健康促進、社區醫療", restriction: "可直接使用" },
         { id: "A009", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F6aa18e091f9ab128c6744106.jpeg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "原民健康、遠距照護、社區責任、志願服務、高齡健康、社區長照站、遠距會診", restriction: "可直接使用" },
         { id: "A010", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F3b89c81c27d183bb666cde44.jpeg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "志願服務、地方創生、社區培力、農村長照、原民健康、健康促進、預防保健、運動指導員、銀髮健身", restriction: "可直接使用" },

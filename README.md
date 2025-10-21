@@ -74,7 +74,7 @@ udnPicdownload/
 ├── requirements/           # 依賴檔案
 │   └── requirements.txt    # Python 依賴
 ├── backups/                # 備份檔案
-│   └── data.js.backup_*    # data.js 最新備份檔案
+│   └── data.js.backup_20251021_170639    # data.js 備份檔案
 ├── logs/                   # 日誌檔案
 │   └── update_data.log     # 更新日誌
 └── .github/workflows/      # GitHub Actions
