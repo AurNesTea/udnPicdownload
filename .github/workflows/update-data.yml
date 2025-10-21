@@ -1,0 +1,72 @@
+name: 自動更新圖庫資料
+
+on:
+  schedule:
+    # 每日中午12點執行 (UTC+8 = UTC+0 的 04:00)
+    - cron: '0 4 * * *'
+  workflow_dispatch: # 允許手動觸發
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: 設定 Python 環境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: 安裝依賴套件
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements/requirements.txt
+    
+    - name: 執行資料更新
+      run: |
+        python scripts/update_data_final.py
+    
+    - name: 檢查檔案變更
+      id: check-changes
+      run: |
+        if git diff --quiet src/data.js; then
+          echo "has-changes=false" >> $GITHUB_OUTPUT
+          echo "📋 沒有資料變更"
+        else
+          echo "has-changes=true" >> $GITHUB_OUTPUT
+          echo "📋 發現資料變更"
+        fi
+    
+    - name: 提交變更
+      if: steps.check-changes.outputs.has-changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add src/data.js
+        git commit -m "🤖 自動更新圖庫資料 - $(date '+%Y-%m-%d %H:%M:%S')"
+        git push
+    
+    - name: 建立更新報告
+      if: always()
+      run: |
+        echo "## 📊 資料更新報告" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**執行時間:** $(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -f "logs/update_data.log" ]; then
+          echo "**更新日誌:**" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -20 logs/update_data.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ steps.check-changes.outputs.has-changes }}" == "true" ]; then
+          echo "✅ **狀態:** 資料已更新並提交" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️ **狀態:** 沒有資料變更" >> $GITHUB_STEP_SUMMARY
+        fi

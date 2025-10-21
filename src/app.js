@@ -108,6 +108,12 @@ function openImageModal(image) {
     modal.show();
 }
 
+// 監聽圖片 Modal 關閉事件
+document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
+    // 確保移除所有 modal-backdrop
+    removeAllModalBackdrops();
+});
+
 // 設定搜尋功能
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
@@ -274,6 +280,9 @@ document.getElementById('formModal').addEventListener('hidden.bs.modal', functio
         
         showToast('申請表單已提交，現在可以下載圖片了！', 'success');
         
+        // 確保移除所有 modal-backdrop
+        removeAllModalBackdrops();
+        
         // 重新開啟圖片 Modal 以更新按鈕狀態
         setTimeout(() => {
             const currentImage = getCurrentImageById(pendingImageId);
@@ -281,8 +290,23 @@ document.getElementById('formModal').addEventListener('hidden.bs.modal', functio
                 openImageModal(currentImage);
             }
         }, 1000);
+    } else {
+        // 即使沒有待處理的申請，也要確保移除背景層
+        removeAllModalBackdrops();
     }
 });
+
+// 移除所有 Modal 背景層的函數
+function removeAllModalBackdrops() {
+    const backdrops = document.getElementsByClassName('modal-backdrop');
+    while (backdrops.length > 0) {
+        backdrops[0].parentNode.removeChild(backdrops[0]);
+    }
+    // 移除 body 上的 modal-open class
+    document.body.classList.remove('modal-open');
+    // 重置 body 的 overflow 樣式
+    document.body.style.overflow = '';
+}
 
 // 根據 ID 取得圖片資料
 function getCurrentImageById(imageId) {
