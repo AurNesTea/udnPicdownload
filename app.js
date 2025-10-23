@@ -66,53 +66,66 @@ function createImageCard(image) {
     return card;
 }
 
-// 開啟圖片Modal
+// 開啟圖片 Modal
 function openImageModal(image) {
-    document.getElementById('modalImage').src = image.url;
-    document.getElementById('modalImage').alt = image.title;
-    document.getElementById('imageModalLabel').textContent = image.title;
-    document.getElementById('modalTitle').textContent = image.title;
-    document.getElementById('modalDescription').textContent = image.subtitle;
-    
-    const tagsContainer = document.getElementById('modalTags');
-    const tags = image.keywords.split('、').map(tag => tag.trim());
-    tagsContainer.innerHTML = tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
-    
-    const applicationForm = document.getElementById('applicationForm');
-    const downloadForm = document.getElementById('downloadForm');
-    
-    if (image.restriction === '需要申請' || image.restriction === '須申請使用') {
-        // 檢查是否已經申請過
-        const hasApplied = checkApplicationStatus(image.id);
-        
-        if (hasApplied) {
-            // 已申請，顯示下載按鈕
-            applicationForm.style.display = 'none';
-            downloadForm.style.display = 'block';
-            document.getElementById('downloadBtn').innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
-        } else {
-            // 未申請，顯示申請按鈕
-            applicationForm.style.display = 'block';
-            document.getElementById('applyBtn').setAttribute('data-image-id', image.id);
-            downloadForm.style.display = 'none';
-        }
+    // 基本顯示
+    const modalEl = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const titleEl = document.getElementById('modalTitle');
+    const descEl = document.getElementById('modalDescription');
+    const tagsEl = document.getElementById('modalTags');
+    const applyBox = document.getElementById('applicationForm');
+    const downloadBox = document.getElementById('downloadForm');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const applyBtn = document.getElementById('applyBtn');
+
+    modalImg.src = image.url;
+    modalImg.alt = image.title || '';
+    titleEl.textContent = image.title || '圖片';
+    descEl.textContent = image.subtitle || '';
+    tagsEl.innerHTML = (image.keywords || '')
+        .split('、').map(t => t.trim()).filter(Boolean)
+        .map(t => `<span class="tag">#${t}</span>`).join('');
+
+    // 判斷是否需要申請
+    const needApply = /(需要申請|須申請)/.test(String(image.restriction || ''));
+
+    // 是否已申請
+    const hasApplied = needApply ? checkApplicationStatus(image.id) : true;
+
+    // UI 切換
+    if (needApply && !hasApplied) {
+        // 需要申請且未申請
+        applyBox.style.display = 'block';
+        downloadBox.style.display = 'none';
     } else {
-        applicationForm.style.display = 'none';
-        downloadForm.style.display = 'block';
-        document.getElementById('downloadBtn').innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
+        // 可直接使用或已申請
+        applyBox.style.display = 'none';
+        downloadBox.style.display = 'block';
     }
-    
-    document.getElementById('downloadBtn').setAttribute('data-image-id', image.id);
-    
-    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
-    modal.show();
+
+    // 綁定識別資料
+    downloadBtn.dataset.imageId = image.id;
+    applyBtn.dataset.imageId = image.id;
+
+    // 下載按鈕狀態
+    const canDownload = !needApply || hasApplied;
+    downloadBtn.disabled = !canDownload;
+    downloadBtn.classList.toggle('disabled', !canDownload);
+    downloadBtn.innerHTML = canDownload
+        ? '<i class="bi bi-download me-2"></i>下載圖片'
+        : '<i class="bi bi-shield-lock me-2"></i>請先申請';
+
+    // 開啟 Modal
+    new bootstrap.Modal(modalEl).show();
 }
 
-// 監聽圖片 Modal 關閉事件
-document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
-    // 確保移除所有 modal-backdrop
+// Modal 關閉時清理 backdrop（可留可不留）
+document.getElementById('imageModal').addEventListener('hidden.bs.modal', function () {
     removeAllModalBackdrops();
 });
+
+
 
 // 設定搜尋功能
 function setupSearch() {
@@ -209,8 +222,14 @@ function hideLoading(tabNumber) {
 
 // 下載圖片
 document.getElementById('downloadBtn').addEventListener('click', async function() {
-    const imageId = this.getAttribute('data-image-id');
+    const imageId = this.getAttribute('data-image-id') || this.dataset.imageId;
     const imageUrl = document.getElementById('modalImage').src;
+    
+    if (!imageId) {
+        console.error('無法獲取圖片 ID');
+        showToast('下載失敗：無法識別圖片', 'error');
+        return;
+    }
     
     console.log('開始下載圖片:', imageId, imageUrl);
     
@@ -325,7 +344,13 @@ function markImageAsApplied(imageId) {
 
 // 申請表單
 document.getElementById('applyBtn').addEventListener('click', function() {
-    const imageId = this.getAttribute('data-image-id');
+    const imageId = this.getAttribute('data-image-id') || this.dataset.imageId;
+    
+    if (!imageId) {
+        console.error('無法獲取圖片 ID');
+        showToast('申請失敗：無法識別圖片', 'error');
+        return;
+    }
     
     // 開啟 Google 問卷 Modal
     const formModal = new bootstrap.Modal(document.getElementById('formModal'));
