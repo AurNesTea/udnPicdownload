@@ -79,6 +79,7 @@ function openImageModal(image) {
     const downloadBtn = document.getElementById('downloadBtn');
     const applyBtn = document.getElementById('applyBtn');
 
+    // 設定圖片和文字內容
     modalImg.src = image.url;
     modalImg.alt = image.title || '';
     titleEl.textContent = image.title || '圖片';
@@ -87,34 +88,35 @@ function openImageModal(image) {
         .split('、').map(t => t.trim()).filter(Boolean)
         .map(t => `<span class="tag">#${t}</span>`).join('');
 
-    // 判斷是否需要申請
-    const needApply = /(需要申請|須申請)/.test(String(image.restriction || ''));
-
-    // 是否已申請
-    const hasApplied = needApply ? checkApplicationStatus(image.id) : true;
-
-    // UI 切換
-    if (needApply && !hasApplied) {
-        // 需要申請且未申請
-        applyBox.style.display = 'block';
-        downloadBox.style.display = 'none';
-    } else {
-        // 可直接使用或已申請
-        applyBox.style.display = 'none';
-        downloadBox.style.display = 'block';
-    }
-
-    // 綁定識別資料
+    // 下載＆申請按鈕要知道是哪一張圖
     downloadBtn.dataset.imageId = image.id;
     applyBtn.dataset.imageId = image.id;
 
-    // 下載按鈕狀態
-    const canDownload = !needApply || hasApplied;
-    downloadBtn.disabled = !canDownload;
-    downloadBtn.classList.toggle('disabled', !canDownload);
-    downloadBtn.innerHTML = canDownload
-        ? '<i class="bi bi-download me-2"></i>下載圖片'
-        : '<i class="bi bi-shield-lock me-2"></i>請先申請';
+    // 判斷是否需要申請
+    const needApply = /申請/.test(String(image.restriction || ''));
+    
+    if (needApply) {
+        // 需要申請：檢查是否已申請
+        const hasApplied = checkApplicationStatus(image.id);
+        
+        if (hasApplied) {
+            // 已申請：顯示下載表單
+            applyBox.style.display = 'none';
+            downloadBox.style.display = 'block';
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
+        } else {
+            // 未申請：顯示申請表單
+            applyBox.style.display = 'block';
+            downloadBox.style.display = 'none';
+        }
+    } else {
+        // 可直接使用：顯示下載表單
+        applyBox.style.display = 'none';
+        downloadBox.style.display = 'block';
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
+    }
 
     // 開啟 Modal
     new bootstrap.Modal(modalEl).show();
@@ -220,112 +222,63 @@ function hideLoading(tabNumber) {
     document.getElementById(`loading${tabNumber}`).style.display = 'none';
 }
 
-// 下載圖片
-document.getElementById('downloadBtn').addEventListener('click', async function() {
-    const imageId = this.getAttribute('data-image-id') || this.dataset.imageId;
-    const imageUrl = document.getElementById('modalImage').src;
-    
-    if (!imageId) {
-        console.error('無法獲取圖片 ID');
-        showToast('下載失敗：無法識別圖片', 'error');
-        return;
-    }
-    
-    console.log('開始下載圖片:', imageId, imageUrl);
-    
-    try {
-        // 嘗試使用 fetch 下載
-        const response = await fetch(imageUrl, { 
-            mode: 'cors', 
-            cache: 'no-cache',
-            headers: {
-                'Accept': 'image/*'
-            }
-        });
-        
-        console.log('Fetch 回應狀態:', response.status, response.statusText);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const blob = await response.blob();
-        console.log('Blob 大小:', blob.size, '類型:', blob.type);
-        
-        const objectUrl = URL.createObjectURL(blob);
-        
-        // 從 URL 或 Content-Type 判斷副檔名
-        let extension = 'jpg';
-        if (blob.type) {
-            const mimeType = blob.type.split('/')[1];
-            if (mimeType) extension = mimeType;
-        } else {
-            // 從 URL 判斷副檔名
-            const urlExtension = imageUrl.split('.').pop().toLowerCase();
-            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(urlExtension)) {
-                extension = urlExtension;
-            }
-        }
-        
-        console.log('使用副檔名:', extension);
-        
-        // 建立下載連結
-        const link = document.createElement('a');
-        link.href = objectUrl;
-        link.download = `medical_image_${imageId}.${extension}`;
-        link.style.display = 'none';
-        
-        // 觸發下載
-        document.body.appendChild(link);
-        link.click();
-        
-        // 清理
-        setTimeout(() => {
-            document.body.removeChild(link);
-            URL.revokeObjectURL(objectUrl);
-        }, 100);
-        
-        showToast('圖片下載成功！', 'success');
-        
-    } catch (error) {
-        console.error('下載失敗:', error);
-        
-        // 後備方案：使用代理下載
+// 下載圖片 
+(function(){
+    const btn = document.getElementById('downloadBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', async () => {
+        const imageId = btn.dataset.imageId || 'unknown';
+        const imageUrl = document.getElementById('modalImage').src;
+
+        // 若這張圖需要申請、請先導去你做的申請流程（可選）
+        const needApply = document.getElementById('applicationForm').style.display === 'block';
+        // if (needApply) { 打開你表單流程；return; }
+
+        // 禁用按鈕防止重複點擊
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>下載中...';
+
         try {
-            // 嘗試使用代理服務下載
-            const proxyUrl = `https://cors-anywhere.herokuapp.com/${imageUrl}`;
-            const response = await fetch(proxyUrl, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+            const res = await fetch(imageUrl, {
+                mode: 'cors',
+                cache: 'no-cache',
+                referrerPolicy: 'no-referrer'
             });
-            
-            if (response.ok) {
-                const blob = await response.blob();
-                const objectUrl = URL.createObjectURL(blob);
-                
-                const link = document.createElement('a');
-                link.href = objectUrl;
-                link.download = `medical_image_${imageId}.jpg`;
-                link.style.display = 'none';
-                
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(objectUrl);
-                
-                showToast('圖片下載成功！', 'success');
-                return;
-            }
-        } catch (proxyError) {
-            console.error('代理下載失敗:', proxyError);
+            // 某些來源會回 opaque（拿不到 blob）；當作失敗走備援
+            if (!res.ok || res.type === 'opaque') throw new Error('CORS/opaque');
+
+            const blob = await res.blob();
+            const ext = (blob.type && blob.type.split('/')[1]) || 'jpg';
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `medical_image_${String(imageId).replace(/[^\w.-]+/g,'_')}.${ext}`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+
+            showToast('圖片下載成功！','success');
+        } catch (e) {
+            // 後備：在新分頁開啟，給使用者另存
+            const a = document.createElement('a');
+            a.href = imageUrl;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            showToast('來源未開放跨域下載，已改在新分頁開啟。','info');
+            console.error('download error:', e);
         }
-        
-        // 最後的後備方案：在新分頁開啟
-        window.open(imageUrl, '_blank');
-        showToast('瀏覽器限制直接下載，已在新分頁開啟圖片。請右鍵另存新檔。', 'info');
-    }
-});
+
+        // 恢復按鈕狀態
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
+    });
+})();
 
 // 檢查申請狀態
 function checkApplicationStatus(imageId) {
