@@ -17,7 +17,7 @@ pip install -r ../requirements/requirements.txt
 
 REM 執行更新腳本
 echo 🔄 執行資料更新...
-python update_data_final.py
+python update_data_auto.py
 
 if errorlevel 1 (
     echo ❌ 資料更新失敗，請檢查日誌檔案

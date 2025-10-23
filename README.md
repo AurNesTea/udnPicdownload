@@ -63,9 +63,9 @@ udnPicdownload/
 ├── data.js                 # 圖片資料檔案
 ├── app.js                  # JavaScript 邏輯檔案
 ├── scripts/                # 更新腳本
-│   ├── update_data_final.py    # 主要更新腳本（推薦使用）
-│   ├── update_data.py          # 原始更新腳本
-│   ├── update_data_simple.py   # 簡化版本
+│   ├── update_data_auto.py     # GitHub 自動更新腳本
+│   ├── update_data_manual.py   # 本機手動更新腳本（舊版本）
+│   ├── update_data_backup.py   # 備份腳本（簡化版本）
 │   ├── update.sh               # Linux/macOS 執行腳本
 │   └── update.bat              # Windows 執行腳本
 ├── docs/                   # 文件檔案
@@ -146,7 +146,7 @@ udnPicdownload/
 ## 🔧 維護說明
 
 ### **更新圖片資料**：
-1. 使用 `scripts/update_data_final.py` 腳本自動更新
+1. 使用 `scripts/update_data_auto.py` 腳本自動更新
 2. 或手動修改 `data.js` 檔案
 3. 保持 JavaScript 物件結構不變
 4. 重新上傳檔案
@@ -173,7 +173,7 @@ udnPicdownload/
    - 檢查 GitHub Actions 權限設定
 
 4. **編碼問題**
-   - 使用 `scripts/update_data_final.py` 腳本
+   - 使用 `scripts/update_data_auto.py` 腳本
    - 該腳本已處理 Google Sheets 的編碼問題
 
 ### **日誌檔案**
@@ -245,7 +245,7 @@ udnPicdownload/
 - ✅ CORS 限制時提供後備方案
 
 ### **推薦使用方式**：
-1. **本機測試**: 使用 `scripts/update_data_final.py`
+1. **本機測試**: 使用 `scripts/update_data_auto.py`
 2. **生產環境**: 使用 GitHub Actions 自動更新
 3. **緊急更新**: 使用本機腳本手動更新
 

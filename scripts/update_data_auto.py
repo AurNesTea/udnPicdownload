@@ -13,11 +13,18 @@ from datetime import datetime
 from typing import Dict, List, Any
 
 # 設定日誌
+import os
+
+# 確保 logs 目錄存在
+log_dir = '../logs'
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('../logs/update_data.log', encoding='utf-8'),
+        logging.FileHandler(os.path.join(log_dir, 'update_data.log'), encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

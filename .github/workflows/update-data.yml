@@ -28,7 +28,7 @@ jobs:
     
     - name: 執行資料更新
       run: |
-        python scripts/update_data_final.py
+        python scripts/update_data_auto.py
     
     - name: 檢查檔案變更
       id: check-changes

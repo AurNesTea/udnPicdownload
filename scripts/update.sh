@@ -15,7 +15,7 @@ pip3 install -r ../requirements/requirements.txt
 
 # 執行更新腳本
 echo "🔄 執行資料更新..."
-python3 update_data_final.py
+python3 update_data_auto.py
 
 if [ $? -eq 0 ]; then
     echo "✅ 資料更新完成！"
