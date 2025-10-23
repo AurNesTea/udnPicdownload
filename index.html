@@ -242,6 +242,36 @@
         .spinner-border {
             color: var(--accent-color);
         }
+
+        .description-block {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin: 0 1rem;
+        }
+
+        .description-content {
+            text-align: center;
+        }
+
+        .description-content p {
+            font-size: 16px;
+            color: #6c757d;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .description-block {
+                margin: 0 0.5rem;
+                padding: 1rem;
+            }
+            
+            .description-content p {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 
@@ -301,6 +331,17 @@
         </div>
         <div class="tab-content" id="imageTabsContent">
             <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                <div class="description-block mb-4">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="description-content">
+                                    <p class="mb-0">增進高齡者健康與自主：關於健康促進、運動維持、自主生活與醫療挑戰。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="image-grid" id="grid1"></div>
                 <div class="text-center">
                     <button class="btn load-more-btn" id="loadMore1" data-tab="1">
@@ -315,6 +356,17 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                <div class="description-block mb-4">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="description-content">
+                                    <p class="mb-0">提升高齡者社會連結：記錄長者在社區、家庭、人際網絡中的互動與支持。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="image-grid" id="grid2"></div>
                 <div class="text-center">
                     <button class="btn load-more-btn" id="loadMore2" data-tab="2">
@@ -329,6 +381,17 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+                <div class="description-block mb-4">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="description-content">
+                                    <p class="mb-0">促進世代和諧共融：探索不同世代在生活、照護、文化上的交會與學習。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="image-grid" id="grid3"></div>
                 <div class="text-center">
                     <button class="btn load-more-btn" id="loadMore3" data-tab="3">
@@ -343,6 +406,17 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+                <div class="description-block mb-4">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="description-content">
+                                    <p class="mb-0">建構高齡友善及安全環境：聚焦住宅、公共空間、交通與照護設施的改善與挑戰。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="image-grid" id="grid4"></div>
                 <div class="text-center">
                     <button class="btn load-more-btn" id="loadMore4" data-tab="4">
@@ -357,6 +431,17 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
+                <div class="description-block mb-4">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="description-content">
+                                    <p class="mb-0">強化社會永續發展：記錄社會各界為高齡未來做出的制度與社會創新努力。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="image-grid" id="grid5"></div>
                 <div class="text-center">
                     <button class="btn load-more-btn" id="loadMore5" data-tab="5">
@@ -408,7 +493,9 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="mt-auto">
+                                <div class="application-form" id="downloadForm" style="display: none;">
+                                    <h6 class="fw-bold text-success">下載圖片</h6>
+                                    <p class="text-muted">此照片可直接下載使用。</p>
                                     <div class="d-grid gap-2">
                                         <button type="button" class="btn btn-primary" id="downloadBtn">
                                             <i class="bi bi-download me-2"></i>下載圖片

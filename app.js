@@ -79,27 +79,27 @@ function openImageModal(image) {
     tagsContainer.innerHTML = tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
     
     const applicationForm = document.getElementById('applicationForm');
-    const downloadBtn = document.getElementById('downloadBtn');
+    const downloadForm = document.getElementById('downloadForm');
     
-    if (image.restriction === '需要申請') {
+    if (image.restriction === '需要申請' || image.restriction === '須申請使用') {
         // 檢查是否已經申請過
         const hasApplied = checkApplicationStatus(image.id);
         
         if (hasApplied) {
             // 已申請，顯示下載按鈕
             applicationForm.style.display = 'none';
-            downloadBtn.style.display = 'block';
-            downloadBtn.innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
+            downloadForm.style.display = 'block';
+            document.getElementById('downloadBtn').innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
         } else {
             // 未申請，顯示申請按鈕
             applicationForm.style.display = 'block';
             document.getElementById('applyBtn').setAttribute('data-image-id', image.id);
-            downloadBtn.style.display = 'none';
+            downloadForm.style.display = 'none';
         }
     } else {
         applicationForm.style.display = 'none';
-        downloadBtn.style.display = 'block';
-        downloadBtn.innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
+        downloadForm.style.display = 'block';
+        document.getElementById('downloadBtn').innerHTML = '<i class="bi bi-download me-2"></i>下載圖片';
     }
     
     document.getElementById('downloadBtn').setAttribute('data-image-id', image.id);
