@@ -212,32 +212,99 @@ document.getElementById('downloadBtn').addEventListener('click', async function(
     const imageId = this.getAttribute('data-image-id');
     const imageUrl = document.getElementById('modalImage').src;
     
+    console.log('開始下載圖片:', imageId, imageUrl);
+    
     try {
-        const response = await fetch(imageUrl, { mode: 'cors', cache: 'no-cache' });
-        if (!response.ok) throw new Error('Failed to fetch image');
-        const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
-        const extension = (blob.type && blob.type.split('/')[1]) || 'jpg';
+        // 嘗試使用 fetch 下載
+        const response = await fetch(imageUrl, { 
+            mode: 'cors', 
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'image/*'
+            }
+        });
         
+        console.log('Fetch 回應狀態:', response.status, response.statusText);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const blob = await response.blob();
+        console.log('Blob 大小:', blob.size, '類型:', blob.type);
+        
+        const objectUrl = URL.createObjectURL(blob);
+        
+        // 從 URL 或 Content-Type 判斷副檔名
+        let extension = 'jpg';
+        if (blob.type) {
+            const mimeType = blob.type.split('/')[1];
+            if (mimeType) extension = mimeType;
+        } else {
+            // 從 URL 判斷副檔名
+            const urlExtension = imageUrl.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(urlExtension)) {
+                extension = urlExtension;
+            }
+        }
+        
+        console.log('使用副檔名:', extension);
+        
+        // 建立下載連結
         const link = document.createElement('a');
         link.href = objectUrl;
         link.download = `medical_image_${imageId}.${extension}`;
+        link.style.display = 'none';
+        
+        // 觸發下載
         document.body.appendChild(link);
         link.click();
-        link.remove();
-        URL.revokeObjectURL(objectUrl);
+        
+        // 清理
+        setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(objectUrl);
+        }, 100);
         
         showToast('圖片下載成功！', 'success');
+        
     } catch (error) {
-        // 後備方案：若無法以 Blob 下載，則改為在新分頁開啟
-        const link = document.createElement('a');
-        link.href = imageUrl;
-        link.target = '_blank';
-        link.rel = 'noopener';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        showToast('瀏覽器限制直下載，已在新分頁開啟圖片。', 'info');
+        console.error('下載失敗:', error);
+        
+        // 後備方案：使用代理下載
+        try {
+            // 嘗試使用代理服務下載
+            const proxyUrl = `https://cors-anywhere.herokuapp.com/${imageUrl}`;
+            const response = await fetch(proxyUrl, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = objectUrl;
+                link.download = `medical_image_${imageId}.jpg`;
+                link.style.display = 'none';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(objectUrl);
+                
+                showToast('圖片下載成功！', 'success');
+                return;
+            }
+        } catch (proxyError) {
+            console.error('代理下載失敗:', proxyError);
+        }
+        
+        // 最後的後備方案：在新分頁開啟
+        window.open(imageUrl, '_blank');
+        showToast('瀏覽器限制直接下載，已在新分頁開啟圖片。請右鍵另存新檔。', 'info');
     }
 });
 
