@@ -12,12 +12,18 @@ import logging
 from datetime import datetime
 from typing import Dict, List, Any
 
+# 以腳本位置推導專案根目錄，將日誌統一寫入 logs/update_data.log
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
+LOGS_DIR = os.path.join(REPO_ROOT, 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)
+
 # 設定日誌
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('update_data.log', encoding='utf-8'),
+        logging.FileHandler(os.path.join(LOGS_DIR, 'update_data.log'), encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

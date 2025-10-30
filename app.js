@@ -2,6 +2,15 @@
 const currentDisplayCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 const itemsPerLoad = 20;
 
+function isValidUrl(url) {
+    try {
+        const u = new URL(url);
+        return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
 // 初始化頁面
 document.addEventListener('DOMContentLoaded', function() {
     initializeTabs();
@@ -42,6 +51,10 @@ function loadImagesForTab(tabNumber) {
     setTimeout(() => {
         for (let i = startIndex; i < endIndex; i++) {
             const image = images[i];
+            if (!isValidUrl(image.url)) {
+                console.warn('無效的圖片 URL，已略過顯示:', image.id, image.url);
+                continue;
+            }
             const imageCard = createImageCard(image);
             grid.appendChild(imageCard);
         }
@@ -163,7 +176,7 @@ function searchInTab(tabNumber, query) {
     
     const filteredImages = images.filter(image => {
         const searchText = `${image.title} ${image.subtitle} ${image.keywords}`.toLowerCase();
-        return searchText.includes(query);
+        return searchText.includes(query) && isValidUrl(image.url);
     });
     
     filteredImages.forEach(image => {

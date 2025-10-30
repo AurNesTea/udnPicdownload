@@ -11,20 +11,20 @@ import requests
 import logging
 from datetime import datetime
 from typing import Dict, List, Any
+from urllib.parse import urlparse
 
-# 設定日誌
-import os
+# 設定路徑：以腳本所在位置推導專案根目錄，避免執行位置造成路徑錯誤
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 
-# 確保 logs 目錄存在
-log_dir = '../logs'
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir, exist_ok=True)
+# 設定日誌輸出至專案根目錄檔案
+log_file = os.path.join(REPO_ROOT, 'logs/update_data.log')
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(os.path.join(log_dir, 'update_data.log'), encoding='utf-8'),
+        logging.FileHandler(log_file, encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
@@ -34,7 +34,8 @@ class DataUpdater:
     def __init__(self):
         self.sheets_url = "https://docs.google.com/spreadsheets/d/1U98cnItKs0hkKLY-l7kGuKxIM0Mf6DBRPSzBHxTI0EY/edit?gid=1594065956#gid=1594065956"
         self.csv_url = "https://docs.google.com/spreadsheets/d/1U98cnItKs0hkKLY-l7kGuKxIM0Mf6DBRPSzBHxTI0EY/export?format=csv&gid=1594065956"
-        self.output_file = "../data.js"
+        # 將輸出檔、備份與日誌統一至專案根目錄
+        self.output_file = os.path.join(REPO_ROOT, 'data.js')
         
     def fetch_data_from_sheets(self) -> List[Dict[str, Any]]:
         """從 Google Sheets 獲取資料"""
@@ -79,6 +80,13 @@ class DataUpdater:
         # 初始化各主題的資料陣列
         image_data = {str(i): [] for i in range(1, 6)}
         
+        def is_valid_url(url: str) -> bool:
+            try:
+                parsed = urlparse(url)
+                return parsed.scheme in ("http", "https") and bool(parsed.netloc)
+            except Exception:
+                return False
+
         for row in raw_data:
             try:
                 # 使用字典的 keys() 來獲取所有欄位名稱
@@ -148,6 +156,11 @@ class DataUpdater:
                     
                     # 生成圖片 ID
                     image_id = f"{main_id}{sub_id.zfill(3)}"
+
+                    # 驗證 URL 合法性（例如 C008 錯誤 URL）
+                    if not is_valid_url(url):
+                        logger.warning(f"無效的圖片 URL，已略過輸出: 圖片ID={image_id}, URL={url}")
+                        continue
                     
                     # 取得主題編號
                     theme_number = theme_mapping.get(theme)
@@ -230,7 +243,9 @@ const imageData = {{
         """備份現有的 data.js 檔案"""
         if os.path.exists(self.output_file):
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            backup_file = f"../backups/{os.path.basename(self.output_file)}.backup_{timestamp}"
+            backups_dir = os.path.join(REPO_ROOT, 'backups')
+            os.makedirs(backups_dir, exist_ok=True)
+            backup_file = os.path.join(backups_dir, f"{os.path.basename(self.output_file)}.backup_{timestamp}")
             os.rename(self.output_file, backup_file)
             logger.info(f"已備份現有檔案至: {backup_file}")
     
