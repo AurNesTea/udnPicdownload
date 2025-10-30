@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-新醫情圖庫資料更新腳本 - 最終版本
+新醫情圖庫資料更新腳本
 從 Google Sheets 讀取資料並更新 data.js 檔案
 """
 
@@ -9,6 +9,7 @@ import os
 import json
 import requests
 import logging
+import re
 from datetime import datetime
 from typing import Dict, List, Any
 from urllib.parse import urlparse
@@ -19,6 +20,7 @@ REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, '..'))
 
 # 設定日誌輸出至專案根目錄檔案
 log_file = os.path.join(REPO_ROOT, 'logs/update_data.log')
+os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,33 +38,25 @@ class DataUpdater:
         self.csv_url = "https://docs.google.com/spreadsheets/d/1U98cnItKs0hkKLY-l7kGuKxIM0Mf6DBRPSzBHxTI0EY/export?format=csv&gid=1594065956"
         # 將輸出檔、備份與日誌統一至專案根目錄
         self.output_file = os.path.join(REPO_ROOT, 'data.js')
+        self._http = requests.Session()
+        self._http.headers.update({
+            "User-Agent": "Mozilla/5.0 (compatible; DataUpdater/1.0; +https://example.com)"
+        })
         
     def fetch_data_from_sheets(self) -> List[Dict[str, Any]]:
-        """從 Google Sheets 獲取資料"""
-        try:
-            logger.info("正在從 Google Sheets 獲取資料...")
-            response = requests.get(self.csv_url, timeout=30)
-            response.raise_for_status()
-            
-            # 使用 csv 模組解析資料
-            import csv
-            import io
-            
-            # 將回應內容轉換為 StringIO 物件
-            csv_content = response.text
-            csv_reader = csv.DictReader(io.StringIO(csv_content))
-            
-            data = []
-            for row in csv_reader:
-                # 直接使用原始資料
-                data.append(row)
-            
-            logger.info(f"成功獲取 {len(data)} 筆資料")
-            return data
-            
-        except Exception as e:
-            logger.error(f"獲取 Google Sheets 資料失敗: {e}")
-            raise
+        """從 Google Sheets 獲取資料（正確處理 UTF-8）"""
+        import csv, io
+        logger.info("正在從 Google Sheets 獲取資料...")
+
+        r = self._http.get(self.csv_url, timeout=30)
+        r.raise_for_status()
+
+        # 用 bytes，自行以 UTF-8（含 BOM）解碼
+        csv_text = r.content.decode("utf-8-sig", errors="strict")
+        reader = csv.DictReader(io.StringIO(csv_text))
+        data = [row for row in reader]
+        logger.info(f"成功獲取 {len(data)} 筆資料")
+        return data
     
     def transform_data(self, raw_data: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
         """將原始資料轉換為 data.js 格式"""
@@ -87,99 +81,81 @@ class DataUpdater:
             except Exception:
                 return False
 
+        def normalize_keywords(text: str) -> str:
+            if not text:
+                return text
+            t = text.strip()
+            # 統一為頓號作為分隔
+            t = t.replace(",", "、").replace("，", "、")
+            # 合併連續頓號
+            t = re.sub(r"、{2,}", "、", t)
+            # 去除前後多餘頓號與空白
+            t = t.strip("、 ")
+            return t
+
+        # 欄名對應，避免欄位順序變動造成錯誤
+        field_map: Dict[str, List[str]] = {
+            "main_id": ["主編號", "主編號ID"],
+            "sub_id": ["編號", "次編號"],
+            "theme": ["主題"],
+            "subtitle": ["副標", "副標題", "次主題（圖名）"],
+            "url": ["圖片URL", "URL", "連結", "圖片連結"],
+            "keywords": ["關鍵字", "關鍵詞", "關鍵字（、區隔）", "tags", "標籤"],
+            "restriction": ["使用限制", "權限"],
+        }
+
+        def pick(row: Dict[str, Any], candidates: List[str], default: str = "") -> str:
+            for name in candidates:
+                if name in row and row[name] is not None:
+                    return str(row[name]).strip()
+            return default
+
         for row in raw_data:
             try:
-                # 使用字典的 keys() 來獲取所有欄位名稱
-                keys = list(row.keys())
-                
-                # 根據位置來獲取資料（假設欄位順序固定）
-                if len(keys) >= 7:
-                    main_id = row[keys[0]].strip() if keys[0] in row else ""
-                    sub_id = row[keys[1]].strip() if keys[1] in row else ""
-                    raw_theme = row[keys[2]].strip() if keys[2] in row else ""
-                    raw_subtitle = row[keys[3]].strip() if keys[3] in row else ""
-                    url = row[keys[4]].strip() if keys[4] in row else ""
-                    raw_keywords = row[keys[5]].strip() if keys[5] in row else ""
-                    raw_restriction = row[keys[6]].strip() if keys[6] in row else "無限制"
-                    
-                    # 解碼亂碼字串為正確的繁體中文
-                    def decode_text(text):
-                        """將亂碼字串解碼為正確的繁體中文"""
-                        if not text:
-                            return text
-                        
-                        # 檢查是否包含亂碼字元
-                        if any(ord(char) > 127 for char in text):
-                            try:
-                                # 方法1: 嘗試將亂碼解碼為正確的中文
-                                # 亂碼通常是 UTF-8 被誤解為 Latin-1 造成的
-                                decoded = text.encode('latin-1').decode('utf-8')
-                                return decoded
-                            except (UnicodeEncodeError, UnicodeDecodeError):
-                                try:
-                                    # 方法2: 嘗試其他編碼組合
-                                    decoded = text.encode('cp1252').decode('utf-8')
-                                    return decoded
-                                except (UnicodeEncodeError, UnicodeDecodeError):
-                                    try:
-                                        # 方法3: 嘗試 ISO-8859-1 到 UTF-8
-                                        decoded = text.encode('iso-8859-1').decode('utf-8')
-                                        return decoded
-                                    except (UnicodeEncodeError, UnicodeDecodeError):
-                                        # 方法4: 手動替換常見的亂碼模式
-                                        # 這些是從實際資料中觀察到的亂碼模式
-                                        replacements = {
-                                            "æ¢æ§çãä¸é«ãç³å°¿çãé«è¡å£ãå¿è¡ç®¡ç¾çãå¨æ°å¥åº·ä¿éãæ´åç§è­·ãæ¢æ§å±ç": "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病",
-                                            "æ¢æ§çãä¸é«ãç³å°¿çãé«è¡å£ãå¿è¡ç®¡ç¾çãå¨æ°å¥åº·ä¿éãæ´åç§è­·ãæ¢æ§å±ç": "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病"
-                                        }
-                                        
-                                        # 檢查是否有已知的亂碼模式
-                                        for garbled, correct in replacements.items():
-                                            if garbled in text:
-                                                return text.replace(garbled, correct)
-                                        
-                                        # 如果所有方法都失敗，返回原始文字
-                                        return text
-                        else:
-                            # 如果沒有亂碼字元，直接返回
-                            return text
-                    
-                    theme = decode_text(raw_theme)
-                    subtitle = decode_text(raw_subtitle)
-                    keywords = decode_text(raw_keywords)
-                    restriction = decode_text(raw_restriction)
-                    
-                    # 驗證必要欄位
-                    if not all([main_id, sub_id, url, theme]):
-                        logger.warning(f"跳過不完整的資料行: 主編號={main_id}, 編號={sub_id}, 主題={theme}")
-                        continue
-                    
-                    # 生成圖片 ID
-                    image_id = f"{main_id}{sub_id.zfill(3)}"
+                # 依欄名取值（避免欄序變動）
+                main_id      = pick(row, field_map["main_id"])
+                sub_id       = pick(row, field_map["sub_id"])
+                theme_raw    = pick(row, field_map["theme"])
+                subtitle     = pick(row, field_map["subtitle"])
+                url          = pick(row, field_map["url"])
+                keywords     = pick(row, field_map["keywords"])
+                restriction  = pick(row, field_map["restriction"], "無限制")
 
-                    # 驗證 URL 合法性（例如 C008 錯誤 URL）
-                    if not is_valid_url(url):
-                        logger.warning(f"無效的圖片 URL，已略過輸出: 圖片ID={image_id}, URL={url}")
-                        continue
-                    
-                    # 取得主題編號
-                    theme_number = theme_mapping.get(theme)
-                    if not theme_number:
-                        logger.warning(f"未知的主題: {theme} (原始: {raw_theme})")
-                        continue
-                    
-                    # 建立圖片資料物件
-                    image_obj = {
-                        "id": image_id,
-                        "url": url,
-                        "title": theme,
-                        "subtitle": subtitle,
-                        "keywords": keywords,
-                        "restriction": restriction
-                    }
-                    
-                    # 加入對應主題
-                    image_data[str(theme_number)].append(image_obj)
+                 # 主題名稱容錯（去全形空白/多餘空白）
+                theme = theme_raw.replace("\u3000", "").strip()
+
+                # 驗證必要欄位
+                if not all([main_id, sub_id, url, theme]):
+                    logger.warning(f"跳過不完整的資料行: 主編號={main_id}, 編號={sub_id}, 主題={theme}")
+                    continue
+                # 生成圖片 ID
+                image_id = f"{main_id}{sub_id.zfill(3)}"
+
+                # 驗證 URL 合法性（例如 C008 錯誤 URL）
+                if not is_valid_url(url):
+                    logger.warning(f"無效的圖片 URL，已略過輸出: 圖片ID={image_id}, URL={url}")
+                    continue
+                
+                # 取得主題編號
+                theme_number = theme_mapping.get(theme)
+                if not theme_number:
+                    logger.warning(f"未知的主題: {theme} (原始: {theme_raw})")
+                    continue
+                
+                # 正規化關鍵字（移除重複分隔與多餘空白）
+                keywords = normalize_keywords(keywords)
+
+                # 建立圖片資料物件
+                image_obj = {
+                    "id": image_id,
+                    "url": url,
+                    "title": theme,
+                    "subtitle": subtitle,
+                    "keywords": keywords,
+                    "restriction": restriction
+                }
+                # 加入對應主題
+                image_data[str(theme_number)].append(image_obj)
                     
             except Exception as e:
                 logger.error(f"處理資料行時發生錯誤: {e}")
@@ -273,7 +249,7 @@ const imageData = {{
             logger.info(f"資料更新完成！已更新 {self.output_file}")
             
             # 6. 修復亂碼
-            self.fix_garbled_text()
+            # self.fix_garbled_text()
             
             # 7. 驗證檔案
             self.validate_output_file()
@@ -282,31 +258,31 @@ const imageData = {{
             logger.error(f"資料更新失敗: {e}")
             raise
     
-    def fix_garbled_text(self):
-        """修復 data.js 檔案中的亂碼"""
-        try:
-            # 讀取檔案內容
-            with open(self.output_file, 'r', encoding='utf-8') as f:
-                content = f.read()
+    # def fix_garbled_text(self):
+    #     """修復 data.js 檔案中的亂碼"""
+    #     try:
+    #         # 讀取檔案內容
+    #         with open(self.output_file, 'r', encoding='utf-8') as f:
+    #             content = f.read()
             
-            # 定義亂碼替換規則
-            replacements = {
-                "æ\x85¢æ\x80§ç\x97\x85ã\x80\x81ä¸\x89é«\x98ã\x80\x81ç³\x96å°¿ç\x97\x85ã\x80\x81é«\x98è¡\x80å£\x93ã\x80\x81å¿\x83è¡\x80ç®¡ç\x96¾ç\x97\x85ã\x80\x81å\x85¨æ°\x91å\x81¥åº·ä¿\x9dé\x9aªã\x80\x81æ\x95´å\x90\x88ç\x85§è\xad·ã\x80\x81æ\x85¢æ\x80§å\x85±ç\x97": "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病"
-            }
+    #         # 定義亂碼替換規則
+    #         replacements = {
+    #             "æ\x85¢æ\x80§ç\x97\x85ã\x80\x81ä¸\x89é«\x98ã\x80\x81ç³\x96å°¿ç\x97\x85ã\x80\x81é«\x98è¡\x80å£\x93ã\x80\x81å¿\x83è¡\x80ç®¡ç\x96¾ç\x97\x85ã\x80\x81å\x85¨æ°\x91å\x81¥åº·ä¿\x9dé\x9aªã\x80\x81æ\x95´å\x90\x88ç\x85§è\xad·ã\x80\x81æ\x85¢æ\x80§å\x85±ç\x97": "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病"
+    #         }
             
-            # 執行替換
-            original_content = content
-            for garbled, correct in replacements.items():
-                content = content.replace(garbled, correct)
+    #         # 執行替換
+    #         original_content = content
+    #         for garbled, correct in replacements.items():
+    #             content = content.replace(garbled, correct)
             
-            # 如果有變更，寫回檔案
-            if content != original_content:
-                with open(self.output_file, 'w', encoding='utf-8') as f:
-                    f.write(content)
-                logger.info("已修復亂碼文字")
+    #         # 如果有變更，寫回檔案
+    #         if content != original_content:
+    #             with open(self.output_file, 'w', encoding='utf-8') as f:
+    #                 f.write(content)
+    #             logger.info("已修復亂碼文字")
             
-        except Exception as e:
-            logger.warning(f"修復亂碼時發生錯誤: {e}")
+    #     except Exception as e:
+    #         logger.warning(f"修復亂碼時發生錯誤: {e}")
     
     def validate_output_file(self):
         """驗證生成的 data.js 檔案"""

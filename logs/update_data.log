@@ -977,3 +977,84 @@
 2025-10-30 15:05:27,588 - INFO - 資料更新完成！已更新 /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/data.js
 2025-10-30 15:05:27,589 - INFO - 已修復亂碼文字
 2025-10-30 15:05:27,589 - INFO - 檔案驗證通過
+2025-10-30 15:31:35,873 - INFO - 開始資料更新流程...
+2025-10-30 15:31:35,883 - INFO - 正在從 Google Sheets 獲取資料...
+2025-10-30 15:31:36,714 - INFO - 成功獲取 180 筆資料
+2025-10-30 15:31:36,716 - INFO - 正在轉換資料格式...
+2025-10-30 15:31:36,718 - INFO - 主題 1: 92 張圖片
+2025-10-30 15:31:36,718 - INFO - 主題 2: 57 張圖片
+2025-10-30 15:31:36,718 - INFO - 主題 3: 10 張圖片
+2025-10-30 15:31:36,718 - INFO - 主題 4: 17 張圖片
+2025-10-30 15:31:36,718 - INFO - 主題 5: 4 張圖片
+2025-10-30 15:31:36,718 - INFO - 正在生成 data.js 檔案...
+2025-10-30 15:31:36,719 - INFO - 已備份現有檔案至: /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/backups/data.js.backup_20251030_153136
+2025-10-30 15:31:36,719 - INFO - 資料更新完成！已更新 /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/data.js
+2025-10-30 15:31:36,719 - INFO - 已修復亂碼文字
+2025-10-30 15:31:36,720 - INFO - 檔案驗證通過
+2025-10-30 17:03:12,095 - INFO - 開始資料更新流程...
+2025-10-30 17:03:12,099 - INFO - 正在從 Google Sheets 獲取資料...
+2025-10-30 17:03:13,304 - INFO - 成功獲取 180 筆資料
+2025-10-30 17:03:13,304 - INFO - 正在轉換資料格式...
+2025-10-30 17:03:13,308 - INFO - 主題 1: 92 張圖片
+2025-10-30 17:03:13,308 - INFO - 主題 2: 57 張圖片
+2025-10-30 17:03:13,308 - INFO - 主題 3: 10 張圖片
+2025-10-30 17:03:13,308 - INFO - 主題 4: 17 張圖片
+2025-10-30 17:03:13,308 - INFO - 主題 5: 4 張圖片
+2025-10-30 17:03:13,308 - INFO - 正在生成 data.js 檔案...
+2025-10-30 17:03:13,309 - INFO - 已備份現有檔案至: /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/backups/data.js.backup_20251030_170313
+2025-10-30 17:03:13,310 - INFO - 資料更新完成！已更新 /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/data.js
+2025-10-30 17:03:13,310 - INFO - 檔案驗證通過
+2025-10-30 17:04:38,009 - INFO - 開始資料更新流程...
+2025-10-30 17:04:38,012 - INFO - 正在從 Google Sheets 獲取資料...
+2025-10-30 17:04:38,683 - INFO - 成功獲取 180 筆資料
+2025-10-30 17:04:38,685 - INFO - 正在轉換資料格式...
+2025-10-30 17:04:38,687 - INFO - 主題 1: 92 張圖片
+2025-10-30 17:04:38,687 - INFO - 主題 2: 57 張圖片
+2025-10-30 17:04:38,687 - INFO - 主題 3: 10 張圖片
+2025-10-30 17:04:38,687 - INFO - 主題 4: 17 張圖片
+2025-10-30 17:04:38,687 - INFO - 主題 5: 4 張圖片
+2025-10-30 17:04:38,687 - INFO - 正在生成 data.js 檔案...
+2025-10-30 17:04:38,688 - INFO - 已備份現有檔案至: /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/backups/data.js.backup_20251030_170438
+2025-10-30 17:04:38,688 - INFO - 資料更新完成！已更新 /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/data.js
+2025-10-30 17:04:38,688 - INFO - 已修復亂碼文字
+2025-10-30 17:04:38,689 - INFO - 檔案驗證通過
+2025-10-30 17:04:40,353 - INFO - 開始資料更新流程...
+2025-10-30 17:04:40,353 - INFO - 正在從 Google Sheets 獲取資料...
+2025-10-30 17:04:40,998 - INFO - 成功獲取 180 筆資料
+2025-10-30 17:04:41,002 - INFO - 正在轉換資料格式...
+2025-10-30 17:04:41,004 - INFO - 主題 1: 92 張圖片
+2025-10-30 17:04:41,004 - INFO - 主題 2: 57 張圖片
+2025-10-30 17:04:41,004 - INFO - 主題 3: 10 張圖片
+2025-10-30 17:04:41,004 - INFO - 主題 4: 17 張圖片
+2025-10-30 17:04:41,004 - INFO - 主題 5: 4 張圖片
+2025-10-30 17:04:41,004 - INFO - 正在生成 data.js 檔案...
+2025-10-30 17:04:41,008 - INFO - 已備份現有檔案至: /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/backups/data.js.backup_20251030_170441
+2025-10-30 17:04:41,008 - INFO - 資料更新完成！已更新 /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/data.js
+2025-10-30 17:04:41,009 - INFO - 已修復亂碼文字
+2025-10-30 17:04:41,009 - INFO - 檔案驗證通過
+2025-10-30 17:05:36,102 - INFO - 開始資料更新流程...
+2025-10-30 17:05:36,106 - INFO - 正在從 Google Sheets 獲取資料...
+2025-10-30 17:05:36,787 - INFO - 成功獲取 180 筆資料
+2025-10-30 17:05:36,787 - INFO - 正在轉換資料格式...
+2025-10-30 17:05:36,790 - INFO - 主題 1: 92 張圖片
+2025-10-30 17:05:36,790 - INFO - 主題 2: 57 張圖片
+2025-10-30 17:05:36,790 - INFO - 主題 3: 10 張圖片
+2025-10-30 17:05:36,790 - INFO - 主題 4: 17 張圖片
+2025-10-30 17:05:36,791 - INFO - 主題 5: 4 張圖片
+2025-10-30 17:05:36,791 - INFO - 正在生成 data.js 檔案...
+2025-10-30 17:05:36,793 - INFO - 已備份現有檔案至: /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/backups/data.js.backup_20251030_170536
+2025-10-30 17:05:36,793 - INFO - 資料更新完成！已更新 /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/data.js
+2025-10-30 17:05:36,793 - INFO - 檔案驗證通過
+2025-10-30 17:11:29,588 - INFO - 開始資料更新流程...
+2025-10-30 17:11:29,593 - INFO - 正在從 Google Sheets 獲取資料...
+2025-10-30 17:11:30,384 - INFO - 成功獲取 180 筆資料
+2025-10-30 17:11:30,384 - INFO - 正在轉換資料格式...
+2025-10-30 17:11:30,388 - INFO - 主題 1: 92 張圖片
+2025-10-30 17:11:30,388 - INFO - 主題 2: 57 張圖片
+2025-10-30 17:11:30,388 - INFO - 主題 3: 10 張圖片
+2025-10-30 17:11:30,388 - INFO - 主題 4: 17 張圖片
+2025-10-30 17:11:30,388 - INFO - 主題 5: 4 張圖片
+2025-10-30 17:11:30,388 - INFO - 正在生成 data.js 檔案...
+2025-10-30 17:11:30,389 - INFO - 已備份現有檔案至: /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/backups/data.js.backup_20251030_171130
+2025-10-30 17:11:30,390 - INFO - 資料更新完成！已更新 /Users/tsungyutsai/Library/CloudStorage/OneDrive-個人/Kevin/UDN/udnFront/udnPicdownload/data.js
+2025-10-30 17:11:30,390 - INFO - 檔案驗證通過

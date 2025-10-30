@@ -45,13 +45,7 @@
 # 進入腳本目錄
 cd scripts
 
-# Windows 使用者
-update.bat
-
-# macOS/Linux 使用者
-chmod +x update.sh && ./update.sh
-
-# 或直接執行 Python 腳本
+# 直接執行 Python 腳本
 python update_data_auto.py
 ```
 
@@ -63,10 +57,8 @@ udnPicdownload/
 ├── data.js                 # 圖片資料檔案
 ├── app.js                  # JavaScript 邏輯檔案
 ├── scripts/                # 更新腳本
-│   ├── update_data_auto.py     # GitHub 自動更新腳本（亦可本機執行）
-│   ├── update_data_backup.py   # 備份腳本（簡化版本）
-│   ├── update.sh               # Linux/macOS 執行腳本
-│   └── update.bat              # Windows 執行腳本
+│   ├── update_data_auto.py     # 自動更新腳本（亦可本機執行）
+│   └── update_data_backup.py   # 備份/簡化版本（保險機制）
 ├── docs/                   # 文件檔案
 │   ├── 問卷需求.txt        # 問卷需求文件
 │   └── 資料更新需求.txt    # 資料更新需求文件
@@ -109,15 +101,15 @@ udnPicdownload/
 - **格式**: CSV 匯出
 - **編碼**: 已處理 UTF-8 編碼問題
 
-### **欄位對應**
+### **欄位對應**（已支援欄名模糊比對與容錯）
 | Google Sheets 欄位 | data.js 欄位 | 說明 |
 |-------------------|-------------|------|
 | 主編號 | id (前綴) | 英文字母部分 |
 | 編號 | id (後綴) | 數字部分，不足位數補0 |
 | URL | url | 圖片網址 |
 | 主題 | title | 主題名稱 |
-| 次主題（圖名） | subtitle | 圖說 |
-| 關鍵字（、區隔） | keywords | 關鍵字 |
+| 次主題（圖名） | subtitle | 圖說（亦支援：副標/副標題/小標/說明/敘述/描述） |
+| 關鍵字（、區隔） | keywords | 關鍵字（亦支援：關鍵詞/作品編號關鍵字/tags/標籤） |
 | 使用限制 | restriction | 使用限制狀態 |
 
 ### **主題對應**
@@ -171,29 +163,27 @@ udnPicdownload/
    - 確認檔案寫入權限
    - 檢查 GitHub Actions 權限設定
 
-4. **編碼問題**
-   - 使用 `scripts/update_data_auto.py` 腳本
-   - 該腳本已處理 Google Sheets 的編碼問題
+4. **編碼與亂碼問題**
+   - 使用 `scripts/update_data_auto.py` 或 `update_data_backup.py`
+   - 已處理 UTF-8 with BOM 與常見亂碼樣態
+   - 關鍵字自動正規化：統一分隔符為「、」，移除連續分隔與前後多餘符號
+   - 無效圖片 URL 會被略過並記錄於日誌
 
-### **日誌檔案**
-更新過程會產生 `logs/update_data.log` 日誌檔案，包含：
+### **日誌與備份**
+更新過程會產生 `logs/update_data.log` 日誌檔案，並自動將舊版 `data.js` 備份到 `backups/` 目錄。包含：
 - 執行時間
 - 資料獲取狀態
 - 轉換過程
 - 錯誤訊息
 
-## 🔄 最新更新 (v1.5)
+## 🔄 最新更新 (v1.6)
 
 ### **系統優化**：
-- **檔案重新命名**: 重新命名更新腳本，讓用途更清晰
-  - `update_data_final.py` → `update_data_auto.py` (GitHub 自動更新)
-  - `update_data.py` → `update_data_manual.py` (本機手動更新，舊版本)
-  - `update_data_simple.py` → `update_data_backup.py` (備份腳本)
-- **自動更新修正**: 解決 GitHub Actions 自動更新時的 `FileNotFoundError` 問題
-  - 自動創建 `logs` 目錄
-  - 修正日誌檔案路徑問題
-- **檔案清理**: 移除重複的更新腳本檔案
-- **文檔更新**: 更新所有相關腳本、工作流程和 README 說明
+- 日誌路徑統一為 `logs/update_data.log`；備份統一於 `backups/`
+- 移除批次腳本教學（`update.sh`/`update.bat`），統一以 Python 執行
+- 精準處理繁中亂碼並加入關鍵字正規化
+- 補強 URL 合法性檢查與日誌記錄
+- README 說明同步更新
 
 ### **UI/UX 改進**：
 - **下載按鈕樣式統一**: 將「可直接使用」圖片的下載按鈕區塊樣式統一為與「使用限制」區塊相同的設計
@@ -277,7 +267,7 @@ udnPicdownload/
 如有問題，請檢查：
 1. 日誌檔案 `logs/update_data.log`
 2. GitHub Actions 執行記錄
-3. Google Sheets 資料格式
+3. Google Sheets 資料格式（表頭建議：主編號、編號、主題、次主題（圖名）、圖片URL/URL、關鍵字、使用限制）
 
 ## 🔄 更新時間
 
@@ -286,6 +276,6 @@ udnPicdownload/
 - **GitHub 部署**: 自動觸發
 
 ---
-**版本**: v1.5  
-**更新日期**: 2025年10月23日  
+**版本**: v1.6  
+**更新日期**: 2025年10月30日  
 **維護者**: Kevin Tsai
