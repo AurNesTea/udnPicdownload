@@ -44,18 +44,29 @@
                 return;
             }
 
-            // ✅ 先切換 UI 到搜尋模式，避免渲染完成但畫面仍停在分頁視圖
+            // 先切換 UI 到搜尋模式，避免渲染完成但畫面仍停在分頁視圖
             enterSearchMode();
 
             // 檢查 imageData 是否存在
-            // 優先使用 window.imageData（由 data.js 設定），如果不存在則嘗試全域 imageData
-            const imageDataToUse = window.imageData || (typeof imageData !== "undefined" ? imageData : null);
+            const imageDataToUse = window?.imageData;
             
+            // 檢查 imageData 是否有效（必須是物件，且不是陣列）
             if (!imageDataToUse || typeof imageDataToUse !== "object" || Array.isArray(imageDataToUse)) {
-                console.error("[search-all.js] 找不到全域 imageData，請確認 data.js 是否先載入。");
+                console.error("[search-all.js] 找不到有效的 imageData", {
+                    hasWindow: typeof window !== "undefined",
+                    windowImageData: window?.imageData,
+                    imageDataType: imageDataToUse ? typeof imageDataToUse : "undefined",
+                    isArray: Array.isArray(imageDataToUse),
+                    imageDataKeys: imageDataToUse && typeof imageDataToUse === "object" ? Object.keys(imageDataToUse) : []
+                });
                 if (searchAllEmpty) {
                     searchAllEmpty.style.display = "block";
-                    searchAllEmpty.textContent = "搜尋結果有誤，請聯繫管理員";
+                    // 保存原始內容，並顯示錯誤訊息
+                    if (!searchAllEmpty.dataset.originalText) {
+                        searchAllEmpty.dataset.originalText = searchAllEmpty.textContent || searchAllEmpty.innerHTML;
+                    }
+                    const emptyText = searchAllEmpty.querySelector("p") || searchAllEmpty;
+                    emptyText.textContent = "搜尋結果有誤，請聯繫管理員";
                 }
                 if (searchAllCount) searchAllCount.textContent = "";
                 return;
@@ -77,20 +88,40 @@
             // 渲染
             if (searchAllGrid) searchAllGrid.innerHTML = "";
             if (!results.length) {
-                if (searchAllEmpty) searchAllEmpty.style.display = "block";
+                if (searchAllEmpty) {
+                    searchAllEmpty.style.display = "block";
+                    // 恢復原始的空搜尋結果訊息
+                    if (searchAllEmpty.dataset.originalText) {
+                        searchAllEmpty.innerHTML = searchAllEmpty.dataset.originalText;
+                    } else {
+                        // 如果沒有保存的原始內容，使用預設訊息
+                        const emptyText = searchAllEmpty.querySelector("p");
+                        if (emptyText) {
+                            emptyText.textContent = "查無符合關鍵字的圖片";
+                        }
+                    }
+                }
                 if (searchAllCount) searchAllCount.textContent = "0 張";
                 return;
             }
 
-            if (searchAllEmpty) searchAllEmpty.style.display = "none";
+            if (searchAllEmpty) {
+                searchAllEmpty.style.display = "none";
+                // 恢復原始內容以備下次使用
+                if (searchAllEmpty.dataset.originalText) {
+                    searchAllEmpty.innerHTML = searchAllEmpty.dataset.originalText;
+                    delete searchAllEmpty.dataset.originalText;
+                }
+            }
             if (searchAllCount) searchAllCount.textContent = `${results.length} 張`;
 
             const frag = document.createDocumentFragment();
             for (const item of results) {
                 const card = document.createElement("div");
                 card.className = "image-card";
+                card.setAttribute("data-image-id", item.id);
                 card.innerHTML = `
-      <img src="${item.url}" alt="${item.title || ""}" loading="lazy" decoding="async">
+      <img src="${item.url}" alt="${item.title || ""}" loading="lazy">
       <div class="image-card-body">
         <div class="image-card-title">${item.title || ""}</div>
         <div class="image-card-text">${item.subtitle || ""}</div>
