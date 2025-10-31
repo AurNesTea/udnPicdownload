@@ -96,7 +96,7 @@ function openImageModal(image) {
     // 設定圖片和文字內容
     modalImg.src = image.url;
     modalImg.alt = image.title || '';
-    imageIdEl.textContent = `圖片編號：${image.id || ''}`;
+    imageIdEl.textContent = `圖片編號：${image.id}`;
     titleEl.textContent = image.title || '圖片';
     descEl.textContent = image.subtitle || '';
     tagsEl.innerHTML = (image.keywords || '')
