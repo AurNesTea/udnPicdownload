@@ -194,3 +194,8 @@ const imageData = {
         { id: "E006", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F539463b5faab6f4cfd5732cc.jpeg", title: "永續發展", subtitle: "超高齡社會下政策支持", keywords: "原民健康、慢性病、高齡健康、社區長照站、健康促進、預防保健、醫療資源分配、社區合作社", restriction: "可直接使用" },
     ]
 };
+
+// 確保 imageData 在全域作用域中可存取（供 search-all.js 使用）
+if (typeof window !== "undefined") {
+    window.imageData = imageData;
+}

@@ -47,7 +47,11 @@
             // ✅ 先切換 UI 到搜尋模式，避免渲染完成但畫面仍停在分頁視圖
             enterSearchMode();
 
-            if (typeof window.imageData !== "object") {
+            // 檢查 imageData 是否存在
+            // 優先使用 window.imageData（由 data.js 設定），如果不存在則嘗試全域 imageData
+            const imageDataToUse = window.imageData || (typeof imageData !== "undefined" ? imageData : null);
+            
+            if (!imageDataToUse || typeof imageDataToUse !== "object" || Array.isArray(imageDataToUse)) {
                 console.error("[search-all.js] 找不到全域 imageData，請確認 data.js 是否先載入。");
                 if (searchAllEmpty) {
                     searchAllEmpty.style.display = "block";
@@ -60,7 +64,7 @@
             // 彙整所有圖片
             const allImages = [];
             for (let i = 1; i <= 5; i++) {
-                const list = window.imageData[i] || [];
+                const list = imageDataToUse[i] || [];
                 for (const item of list) allImages.push(item);
             }
 
