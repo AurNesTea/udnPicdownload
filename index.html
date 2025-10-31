@@ -275,6 +275,13 @@
             .description-content p {
                 font-size: 16px;
             }
+            body.search-mode .nav-tabs,
+            body.search-mode .tab-content {
+                display: none !important;
+            }
+            body.search-mode #searchAll {
+                display: block !important;
+            }
         }
     </style>
 </head>
@@ -291,11 +298,16 @@
                 <div class="search-container">
                     <div class="row">
                         <div class="col-md-8 mx-auto">
+                            <!-- 搜尋 -->
                             <div class="input-group">
                                 <input type="text" class="form-control search-input" placeholder="請輸入要查詢的主題關鍵字"
                                     id="searchInput">
                                 <button class="btn btn-outline-secondary" type="button" id="searchBtn">
                                     <i class="bi bi-search"></i>
+                                </button>
+                                <!-- 清除搜尋 -->
+                                <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn" style="display:none;">
+                                    <i class="bi bi-x-circle"></i>
                                 </button>
                             </div>
                         </div>
@@ -456,6 +468,19 @@
                 </div>
             </div>
         </div>
+        <!-- 整合搜尋結果（預設隱藏；進入 search-mode 才顯示） -->
+        <div id="searchAll" class="container-fluid" style="display:none;">
+            <div class="row mb-3">
+                <div class="col-12 d-flex align-items-center justify-content-between">
+                    <h2 class="h4 m-0">搜尋結果</h2>
+                    <small class="text-muted" id="searchAllCount"></small>
+                </div>
+            </div>
+            <div class="image-grid" id="searchAllGrid"></div>
+            <div class="text-center" id="searchAllEmpty" style="display:none;">
+                <p class="text-muted mt-3">查無符合關鍵字的圖片</p>
+            </div>
+        </div>
     </div>
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -574,6 +599,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="data.js"></script>
     <script src="app.js"></script>
+    <script src="search-all.js"></script>
 </body>
 
 </html>
