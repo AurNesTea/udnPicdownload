@@ -94,7 +94,7 @@ function openImageModal(image) {
     const applyBtn = document.getElementById('applyBtn');
 
     // 設定圖片和文字內容
-    modalImg.src = image.url;
+    modalImg.src = image.url || '';
     modalImg.alt = image.title || '';
     imageIdEl.textContent = `圖片編號：${image.id}`;
     titleEl.textContent = image.title || '圖片';
@@ -136,6 +136,10 @@ function openImageModal(image) {
     // 開啟 Modal
     new bootstrap.Modal(modalEl).show();
 }
+
+// 將 openImageModal 和 resetAllTabs 暴露為全域函數，供 search-all.js 使用
+window.openImageModal = openImageModal;
+window.resetAllTabs = resetAllTabs;
 
 // Modal 關閉時清理 backdrop（可留可不留）
 document.getElementById('imageModal').addEventListener('hidden.bs.modal', function () {

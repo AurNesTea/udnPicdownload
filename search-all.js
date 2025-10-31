@@ -15,151 +15,113 @@
             return;
         }
 
-        // 進入與離開搜尋模式
+        // 進入與離開搜尋模式（加入防呆）
         function enterSearchMode() {
             document.body.classList.add("search-mode");
-            clearBtn.style.display = "inline-block";
-        }
-        function exitSearchMode() {
-            document.body.classList.remove("search-mode");
-            clearBtn.style.display = "none";
-            input.value = "";
-            searchAllGrid.innerHTML = "";
-            searchAllCount.textContent = "";
-            searchAllEmpty.style.display = "none";
+            if (clearBtn) clearBtn.style.display = "inline-block";
         }
 
-        // 搜尋主程式
+        function exitSearchMode() {
+            document.body.classList.remove("search-mode");
+            if (clearBtn) clearBtn.style.display = "none";
+            if (input) input.value = "";
+            if (searchAllGrid) searchAllGrid.innerHTML = "";
+            if (searchAllCount) searchAllCount.textContent = "";
+            if (searchAllEmpty) searchAllEmpty.style.display = "none";
+
+            // ✅ 回復分頁內容（依你的 app.js 提供的函式）
+            if (typeof window.resetAllTabs === "function") {
+                window.resetAllTabs();
+            }
+        }
+
+        // 搜尋主程式（關鍵：有關鍵字時先切換到搜尋模式）
         function runSearch() {
-            const keyword = input.value.trim().toLowerCase();
+            const keyword = (input?.value || "").trim().toLowerCase();
+
             if (!keyword) {
                 exitSearchMode();
                 return;
             }
 
+            // ✅ 先切換 UI 到搜尋模式，避免渲染完成但畫面仍停在分頁視圖
+            enterSearchMode();
+
             if (typeof window.imageData !== "object") {
-                // 改為非阻塞的錯誤處理：
-                // 1) 記錄到 console
-                // 2) 發送日誌到後端 API 寫入 logs/front_logs
-                // 3) 在畫面顯示友善的錯誤訊息給使用者
-                const friendlyMsg = "搜尋結果有誤，請聯繫管理員";
-                console.error("[search-all.js] 找不到全域變數 imageData，請確認 data.js 是否已正確載入。");
-
-                // 發送錯誤日誌到後端
-                const logEntry = {
-                    ts: new Date().toISOString(),
-                    level: "error",
-                    file: "search-all.js",
-                    message: "找不到全域變數 imageData",
-                    userAgent: navigator.userAgent || "",
-                    url: window.location.href || ""
-                };
-
-                // 嘗試發送到後端 API 寫入 logs/front_logs（如果有的話）
-                // 如果沒有後端，這個請求會失敗但不影響功能
-                fetch("/api/log-front-error", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(logEntry),
-                }).catch((err) => {
-                    // 靜默失敗，不影響使用者體驗
-                    // 這在純靜態網站（如 GitHub Pages）中是正常的
-                    console.warn("[search-all.js] 無法發送日誌到伺服器（正常，如果沒有後端 API）");
-                });
-
+                console.error("[search-all.js] 找不到全域 imageData，請確認 data.js 是否先載入。");
                 if (searchAllEmpty) {
                     searchAllEmpty.style.display = "block";
-                    searchAllEmpty.textContent = friendlyMsg;
+                    searchAllEmpty.textContent = "搜尋結果有誤，請聯繫管理員";
                 }
                 if (searchAllCount) searchAllCount.textContent = "";
-
                 return;
             }
 
-            let allImages = [];
-            Object.keys(window.imageData).forEach((tab) => {
-                const list = window.imageData[tab] || [];
-                list.forEach((item) => allImages.push(item));
-            });
+            // 彙整所有圖片
+            const allImages = [];
+            for (let i = 1; i <= 5; i++) {
+                const list = window.imageData[i] || [];
+                for (const item of list) allImages.push(item);
+            }
 
-            // 過濾符合關鍵字的項目
+            // 過濾
             const results = allImages.filter((item) => {
-                const text = `
-            ${item.title || ""}
-            ${item.subtitle || ""}
-            ${item.keywords || ""}
-          `.toLowerCase();
+                const text = `${item.title || ""} ${item.subtitle || ""} ${item.keywords || ""}`.toLowerCase();
                 return text.includes(keyword);
             });
 
-            // 更新畫面
-            searchAllGrid.innerHTML = "";
-            if (results.length === 0) {
-                searchAllEmpty.style.display = "block";
-                searchAllCount.textContent = "0 張";
-            } else {
-                searchAllEmpty.style.display = "none";
-                searchAllCount.textContent = `${results.length} 張`;
-                const frag = document.createDocumentFragment();
-
-                results.forEach((item) => {
-                    const card = document.createElement("div");
-                    card.className = "image-card";
-                    card.innerHTML = `
-              <img src="${item.url}" alt="${item.title || ""}" loading="lazy" decoding="async">
-              <div class="image-card-body">
-                <div class="image-card-title">${item.title || ""}</div>
-                <div class="image-card-text">${item.subtitle || ""}</div>
-                <div class="image-tags">
-                  ${(item.keywords || "")
-                            .split("、")
-                            .map((t) => t.trim())
-                            .filter(Boolean)
-                            .map((t) => `<span class="tag">${t}</span>`)
-                            .join("")}
-                </div>
-              </div>
-            `;
-
-                    // 點擊卡片 → 呼叫原本 app.js 的 Modal 顯示
-                    card.addEventListener("click", () => {
-                        openImageModal(item);
-                    });
-
-                    frag.appendChild(card);
-                });
-
-                searchAllGrid.appendChild(frag);
+            // 渲染
+            if (searchAllGrid) searchAllGrid.innerHTML = "";
+            if (!results.length) {
+                if (searchAllEmpty) searchAllEmpty.style.display = "block";
+                if (searchAllCount) searchAllCount.textContent = "0 張";
+                return;
             }
 
-            enterSearchMode();
+            if (searchAllEmpty) searchAllEmpty.style.display = "none";
+            if (searchAllCount) searchAllCount.textContent = `${results.length} 張`;
+
+            const frag = document.createDocumentFragment();
+            for (const item of results) {
+                const card = document.createElement("div");
+                card.className = "image-card";
+                card.innerHTML = `
+      <img src="${item.url}" alt="${item.title || ""}" loading="lazy" decoding="async">
+      <div class="image-card-body">
+        <div class="image-card-title">${item.title || ""}</div>
+        <div class="image-card-text">${item.subtitle || ""}</div>
+        <div class="image-tags">
+          ${(item.keywords || "")
+                        .split("、").map(t => t.trim()).filter(Boolean)
+                        .map(t => `<span class="tag">${t}</span>`).join("")}
+        </div>
+      </div>`;
+                card.addEventListener("click", () => {
+                    if (typeof window.openImageModal === "function") {
+                        window.openImageModal(item);
+                    }
+                });
+                frag.appendChild(card);
+            }
+            searchAllGrid.appendChild(frag);
         }
 
-        // 綁定事件
-        searchBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            runSearch();
-        });
-        input.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                e.stopPropagation();
-                runSearch();
-            }
-        });
-        clearBtn.addEventListener("click", exitSearchMode);
-        input.addEventListener("input", () => {
-            if (!input.value.trim()) exitSearchMode();
-        });
+        // 綁定事件（加防呆，避免元素缺失時報錯）
+        if (searchBtn) {
+            searchBtn.addEventListener("click", (e) => { e.preventDefault(); runSearch(); });
+        }
+        if (input) {
+            input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); runSearch(); } });
+            input.addEventListener("input", () => { if (!input.value.trim()) exitSearchMode(); });
+        }
+        if (clearBtn) {
+            clearBtn.addEventListener("click", () => exitSearchMode());
+        }
     }
-
-    // 如果 DOM 已經載入，立即執行；否則等待 DOMContentLoaded
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initSearchAll);
-    } else {
+    } 
+    else {
         initSearchAll();
     }
 })();
