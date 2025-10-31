@@ -265,6 +265,15 @@
             margin: 0;
         }
 
+        /* 搜尋模式：隱藏分頁標籤和內容，顯示搜尋結果 */
+        body.search-mode .nav-tabs,
+        body.search-mode .tab-content {
+            display: none !important;
+        }
+        body.search-mode #searchAll {
+            display: block !important;
+        }
+
         @media (max-width: 768px) {
             .description-block {
                 margin: 0 0.5rem;
@@ -274,13 +283,6 @@
             
             .description-content p {
                 font-size: 16px;
-            }
-            body.search-mode .nav-tabs,
-            body.search-mode .tab-content {
-                display: none !important;
-            }
-            body.search-mode #searchAll {
-                display: block !important;
             }
         }
     </style>

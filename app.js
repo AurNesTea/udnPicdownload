@@ -14,7 +14,7 @@ function isValidUrl(url) {
 // 初始化頁面
 document.addEventListener('DOMContentLoaded', function() {
     initializeTabs();
-    setupSearch();
+    // setupSearch(); // 已由 search-all.js 處理全站搜尋功能
     setupLoadMoreButtons();
     loadInitialImages();
 });
