@@ -1,9 +1,9 @@
 // 圖片資料 - 根據Google Sheets「新醫情圖庫資料表」的實際資料
-// 最後更新時間: 2025年10月31日 20:19:22
+// 最後更新時間: 2025年10月30日 17:11:30
 // 自動生成，請勿手動修改
 
 const imageData = {
-    1: [ // 健康促進 - 85張圖片
+    1: [ // 健康促進 - 92張圖片
         { id: "A001", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fd6d776a99afbc2655dcb9c5a.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、老人憂鬱症", restriction: "可直接使用" },
         { id: "A002", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F82cf20b81141225c97feb7ba.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、整合照護、慢性共病", restriction: "可直接使用" },
         { id: "A003", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff54e0d063ed36b76054fa06d.jpg", title: "健康促進", subtitle: "多重慢性病盛行，整合挑戰", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、慢性共病、全民健康保險", restriction: "須申請使用" },
@@ -16,8 +16,12 @@ const imageData = {
         { id: "A010", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F3b89c81c27d183bb666cde44.jpeg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "志願服務、地方創生、社區培力、農村長照、原民健康、健康促進、預防保健、運動指導員、銀髮健身", restriction: "可直接使用" },
         { id: "A011", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F101d8fa87bf4252e1ed79ddf.jpeg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "原民健康、遠距照護、社區責任、志願服務、高齡健康、社區長照站、遠距會診", restriction: "可直接使用" },
         { id: "A012", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F1222580892f14f7a03d73e7a.jpg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "居家醫療、長期照顧、長照服務、居家照護、長照政策、長照據點、高齡友善社區", restriction: "可直接使用" },
+        { id: "A013", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fbda3d80d582fe18ba9b19119.jpg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "預立醫療決定、病人自主權、家庭醫師制度、醫病共享決策、醫療整合照護", restriction: "須申請使用" },
+        { id: "A014", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F62e2d0e18b566654634c65e0.jpg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "醫病共享決策、醫療整合照護、居家醫療、居家護理、護理教育", restriction: "須申請使用" },
+        { id: "A015", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F658c82c1aa2ca12a0641ae05.jpeg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "醫病共享決策、居家醫療、高齡健康、慢性病、三高、腎臟病、透析", restriction: "須申請使用" },
         { id: "A016", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F2ca465032663023cebb5158d.jpeg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "原民健康、偏鄉醫療、世代共融、志願服務、地方創生、居家照護", restriction: "可直接使用" },
         { id: "A017", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F938b0b0a07d53ebca95b0c0a.jpeg", title: "健康促進", subtitle: "居家醫療的落實", keywords: "長照服務、社區照顧據點、日間照顧中心、失智照護、樂齡學習中心、銀髮健身、活力健康操", restriction: "可直接使用" },
+        { id: "A018", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F1bb7cb3f3a001ba096d109a6.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "預立醫療決定、病人自主權、家庭醫師制度、醫病共享決策、醫療整合照護", restriction: "須申請使用" },
         { id: "A019", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fb3c7fddde334b20d4e69accc.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "慢性共病、長期照顧、長照服務、外籍看護工、慢性病、三高、高血壓、心血管疾病", restriction: "可直接使用" },
         { id: "A021", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fa4bedd6442c2452ac33d2ae6.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "慢性病、三高、糖尿病、心血管疾病、慢性共病、預防保健、健康監測系統", restriction: "可直接使用" },
         { id: "A022", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fb0456a40d166095bffc7d421.jpeg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "原民健康、遠距照護、社區責任、志願服務、高齡健康、社區長照站、遠距會診、慢性病、三高、糖尿病、高血壓、心血管疾病", restriction: "可直接使用" },
@@ -27,8 +31,10 @@ const imageData = {
         { id: "A026", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F2d330d671512a04d9e1baf28.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "慢性病、三高、高血壓、心血管疾病、預防保健、健康識能、疾病管理、健康檢測", restriction: "可直接使用" },
         { id: "A027", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F937ab73a8402711ff299963c.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "健康促進、預防保健、銀髮健身、活力健康操、健康識能、疾病管理、科技輔具、智慧醫療", restriction: "可直接使用" },
         { id: "A028", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff450851ebaa019e742a1ed08.jpeg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "慢性病、三高、糖尿病、心血管疾病、慢性共病、預防保健、全民健康保險", restriction: "可直接使用" },
+        { id: "A029", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F0387b111f724b54bed1bc833.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "預立醫療決定、病人自主權、家庭醫師制度、醫病共享決策、醫療整合照護", restriction: "須申請使用" },
         { id: "A030", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fb9b37764c94c27befb17ba5a.jpeg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "健康促進、預防保健、銀髮健身、活力健康操、健康識能、疾病管理", restriction: "可直接使用" },
         { id: "A031", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F2fc8f32b418f2caf1d4935e9.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "癌症防治、健康識能、健康檢測、健康識能、全民健康保險、健保制度", restriction: "須申請使用" },
+        { id: "A032", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F73c61ba60fc28c69cbd08ffe.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "預立醫療決定、病人自主權、家庭醫師制度、醫病共享決策、醫療整合照護", restriction: "須申請使用" },
         { id: "A033", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F515777b190b6e96487311c94.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "原民健康、社區責任、志願服務、高齡健康、社區長照站、慢性病、三高、糖尿病、高血壓、心血管疾病、健康識能", restriction: "可直接使用" },
         { id: "A034", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F8de485c45cbdea1bcd1a2ebc.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "原民健康、社區責任、志願服務、高齡健康、社區長照站、健康促進、預防保健、醫療資源分配", restriction: "可直接使用" },
         { id: "A035", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff30f420ea10b671a6b849d1c.jpg", title: "健康促進", subtitle: "預防醫學觀念與健康促進", keywords: "原民健康、社區責任、志願服務、高齡健康、社區長照站、健康促進、預防保健、醫療資源分配、慢性病、三高", restriction: "可直接使用" },
@@ -63,6 +69,7 @@ const imageData = {
         { id: "A064", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F4ea9d784d99f8018bca4532f.jpeg", title: "健康促進", subtitle: "外籍看護與多元文化照護", keywords: "慢性共病、長期照顧、長照服務、外籍看護工、慢性病、三高、環境安全、心理健康、老人憂鬱症", restriction: "可直接使用" },
         { id: "A065", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Ff30bf8505bc9130e7fe39635.jpg", title: "健康促進", subtitle: "外籍看護與多元文化照護", keywords: "慢性病、三高、糖尿病、高血壓、心血管疾病、全民健康保險、老人憂鬱症、獨居囚老", restriction: "可直接使用" },
         { id: "A066", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F94a9b481668e280349ec5623.jpg", title: "健康促進", subtitle: "外籍看護與多元文化照護", keywords: "慢性共病、長期照顧、長照服務、外籍看護工、環境安全、心理健康、老人憂鬱症、居家醫療", restriction: "可直接使用" },
+        { id: "A067", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fb1161150d164b6b86a4002bc.jpg", title: "健康促進", subtitle: "外籍看護與多元文化照護", keywords: "生命自主、生命教育、醫療倫理、預立醫療決定、病人自主權", restriction: "須申請使用" },
         { id: "A068", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F030b9dc318d540d2bf562ba9.jpg", title: "健康促進", subtitle: "外籍看護與多元文化照護", keywords: "樂齡學習中心、長青學苑、老人活動中心、社區關懷據點、社區陪伴、志工服務、住宿式長照機構、失智照護、高齡課程", restriction: "可直接使用" },
         { id: "A069", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2Fad75e4ecec3f61bb8d0e872f.jpg", title: "健康促進", subtitle: "外籍看護與多元文化照護", keywords: "長期照顧、長照服務、高齡健康、出院準備服務、長照銜接、心理健康、照顧人員培訓", restriction: "可直接使用" },
         { id: "A070", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F6762e8aa107d714b73b36b30.jpeg", title: "健康促進", subtitle: "高齡醫療與照護費用壓力", keywords: "長期照顧、長照服務、高齡健康、世代共融、家庭照顧者、喘息服務、心理健康、老人憂鬱症、心理衛教", restriction: "可直接使用" },
@@ -187,3 +194,8 @@ const imageData = {
         { id: "E006", url: "https://image.fevercdn.com?bucket=picture-original.fevercdn.com&filepath=udn%2F2%2F203%2F539463b5faab6f4cfd5732cc.jpeg", title: "永續發展", subtitle: "超高齡社會下政策支持", keywords: "原民健康、慢性病、高齡健康、社區長照站、健康促進、預防保健、醫療資源分配、社區合作社", restriction: "可直接使用" },
     ]
 };
+
+// 確保 imageData 在全域作用域中可存取（供 search-all.js 使用）
+if (typeof window !== "undefined") {
+    window.imageData = imageData;
+}
