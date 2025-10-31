@@ -21,6 +21,7 @@
 - **HTML**: 純結構和樣式 (index.html)
 - **資料**: 圖片資料分離 (data.js)
 - **邏輯**: JavaScript 功能分離 (app.js)
+- **搜尋**: 整合搜尋功能 (search-all.js)
 
 ### **外部依賴**：
 - Bootstrap 5.3.0 (CDN)
@@ -29,9 +30,9 @@
 ## 🚀 快速開始
 
 ### 部署使用
-1. 將 `index.html`、`data.js`、`app.js` 檔案上傳到 HTTPS 伺服器
+1. 將 `index.html`、`data.js`、`app.js`、`search-all.js` 檔案上傳到 HTTPS 伺服器
 2. 使用 `index.html` 作為主頁面
-3. 系統會自動載入 `data.js` 和 `app.js`
+3. 系統會自動載入 `data.js`、`app.js` 和 `search-all.js`
 
 ### GitHub Pages 部署
 1. 在 GitHub 專案頁面，進入 Settings > Pages
@@ -56,9 +57,11 @@ udnPicdownload/
 ├── index.html              # 主頁面檔案
 ├── data.js                 # 圖片資料檔案
 ├── app.js                  # JavaScript 邏輯檔案
+├── search-all.js           # 整合搜尋功能檔案
 ├── scripts/                # 更新腳本
 │   ├── update_data_auto.py     # 自動更新腳本（亦可本機執行）
-│   └── update_data_backup.py   # 備份/簡化版本（保險機制）
+│   ├── update_data_backup.py   # 備份/簡化版本（保險機制）
+│   └── log_server.py           # 前端日誌伺服器
 ├── docs/                   # 文件檔案
 │   ├── 問卷需求.txt        # 問卷需求文件
 │   └── 資料更新需求.txt    # 資料更新需求文件
@@ -67,7 +70,8 @@ udnPicdownload/
 ├── backups/                # 備份檔案
 │   └── data.js.backup_20251021_170639    # data.js 備份檔案
 ├── logs/                   # 日誌檔案
-│   └── update_data.log     # 更新日誌
+│   ├── update_data.log     # 資料更新日誌
+│   └── front_logs.log      # 前端錯誤日誌
 └── .github/workflows/      # GitHub Actions
     └── update-data.yml     # 自動更新工作流程
 ```
@@ -76,11 +80,13 @@ udnPicdownload/
 
 - ✅ **5個主題分類**: 健康促進、社會連結、世代共融、友善環境、永續發展
 - ✅ **響應式設計**: 適配各種螢幕尺寸
-- ✅ **模糊搜尋**: 支援關鍵字搜尋
+- ✅ **全站整合搜尋**: 跨分類關鍵字搜尋，顯示所有符合條件的圖片
+- ✅ **分類內搜尋**: 各分類頁籤內支援關鍵字過濾
 - ✅ **分批載入**: 每次載入20張圖片，提升效能
 - ✅ **圖片下載**: 支援 Blob 下載功能
 - ✅ **自動更新**: 從 Google Sheets 自動同步資料
 - ✅ **編碼修正**: 解決繁體中文編碼問題
+- ✅ **錯誤日誌**: 前端錯誤自動發送到後端並記錄到 `logs/front_logs.log` 檔案
 
 ## 📊 資料統計
 
@@ -176,7 +182,54 @@ udnPicdownload/
 - 轉換過程
 - 錯誤訊息
 
-## 🔄 最新更新 (v1.6)
+### **前端錯誤日誌**
+前端錯誤會自動發送到後端 API 並寫入 `logs/front_logs.log` 檔案。包含：
+- 錯誤發生時間
+- 錯誤來源檔案
+- 錯誤訊息
+- 使用者瀏覽器資訊
+- 發生錯誤的頁面 URL
+
+**啟動日誌伺服器**：
+
+```bash
+cd scripts
+python log_server.py [埠號]
+# 預設埠號為 8080
+```
+
+**注意**：
+- 如果是純靜態網站（如 GitHub Pages），需要部署額外的後端服務來接收日誌
+- 若無後端服務，前端會靜默處理錯誤，不影響使用者體驗
+- 日誌格式類似 `update_data.log`：`YYYY-MM-DD HH:MM:SS - ERROR - [檔案名] 錯誤訊息 | URL: ... | UserAgent: ...`
+
+## 🔄 最新更新 (v1.7)
+
+### **Bug 修正**：
+- **修正搜尋功能數據結構錯誤** (`search-all.js`)：
+  - 修正變數名稱：`window.data` → `window.imageData`
+  - 修正圖片屬性：`item.image` → `item.url`
+  - 修正描述屬性：`item.description` → `item.subtitle`
+  - 修正關鍵字屬性：`item.tags` → `item.keywords`（並正確處理字串轉陣列）
+  - 確保與 `data.js` 和 `app.js` 的數據結構一致
+
+### **程式碼品質改進**：
+- 移除未使用的變數：`searchAllContainer`（已註解，避免 linter 警告）
+- 改善錯誤處理機制：
+  - 將阻塞式 `alert` 改為非阻塞式錯誤處理
+  - 添加 console 錯誤記錄
+  - **前端錯誤日誌系統**：前端錯誤會自動發送到後端 API，寫入 `logs/front_logs.log` 檔案
+  - 在畫面顯示友善的錯誤訊息給使用者
+  - 若無後端 API，錯誤會靜默失敗不影響使用者體驗
+
+### **功能改進**：
+- **搜尋功能整合**：`search-all.js` 現在可正確與 `app.js` 的 `openImageModal` 函數整合
+- **錯誤日誌系統**：
+  - 前端錯誤會自動發送到 `/api/log-front-error` API
+  - 後端接收後寫入 `logs/front_logs.log` 檔案
+  - 提供 Python 後端伺服器範例 (`scripts/log_server.py`)
+
+## 🔄 歷史更新 (v1.6)
 
 ### **系統優化**：
 - 日誌路徑統一為 `logs/update_data.log`；備份統一於 `backups/`
@@ -265,9 +318,11 @@ udnPicdownload/
 ## 📞 支援
 
 如有問題，請檢查：
-1. 日誌檔案 `logs/update_data.log`
-2. GitHub Actions 執行記錄
-3. Google Sheets 資料格式（表頭建議：主編號、編號、主題、次主題（圖名）、圖片URL/URL、關鍵字、使用限制）
+1. 日誌檔案 `logs/update_data.log`（資料更新日誌）
+2. 日誌檔案 `logs/front_logs.log`（前端錯誤日誌）
+3. GitHub Actions 執行記錄
+4. Google Sheets 資料格式（表頭建議：主編號、編號、主題、次主題（圖名）、圖片URL/URL、關鍵字、使用限制）
+5. 瀏覽器 Console 錯誤訊息
 
 ## 🔄 更新時間
 
@@ -276,6 +331,6 @@ udnPicdownload/
 - **GitHub 部署**: 自動觸發
 
 ---
-**版本**: v1.6  
-**更新日期**: 2025年10月30日  
+**版本**: v1.7  
+**更新日期**: 2025年1月7日  
 **維護者**: Kevin Tsai

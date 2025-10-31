@@ -35,14 +35,50 @@
             return;
         }
 
-        if (typeof window.data !== "object") {
-            alert("找不到全域變數 data，請確認 data.js 是否已正確載入。");
+        if (typeof window.imageData !== "object") {
+            // 改為非阻塞的錯誤處理：
+            // 1) 記錄到 console
+            // 2) 發送日誌到後端 API 寫入 logs/front_logs
+            // 3) 在畫面顯示友善的錯誤訊息給使用者
+            const friendlyMsg = "搜尋結果有誤，請聯繫管理員";
+            console.error("[search-all.js] 找不到全域變數 imageData，請確認 data.js 是否已正確載入。");
+
+            // 發送錯誤日誌到後端
+            const logEntry = {
+                ts: new Date().toISOString(),
+                level: "error",
+                file: "search-all.js",
+                message: "找不到全域變數 imageData",
+                userAgent: navigator.userAgent || "",
+                url: window.location.href || ""
+            };
+
+            // 嘗試發送到後端 API 寫入 logs/front_logs（如果有的話）
+            // 如果沒有後端，這個請求會失敗但不影響功能
+            fetch("/api/log-front-error", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(logEntry),
+            }).catch((err) => {
+                // 靜默失敗，不影響使用者體驗
+                // 這在純靜態網站（如 GitHub Pages）中是正常的
+                console.warn("[search-all.js] 無法發送日誌到伺服器（正常，如果沒有後端 API）");
+            });
+
+            if (searchAllEmpty) {
+                searchAllEmpty.style.display = "block";
+                searchAllEmpty.textContent = friendlyMsg;
+            }
+            if (searchAllCount) searchAllCount.textContent = "";
+
             return;
         }
 
         let allImages = [];
-        Object.keys(window.data).forEach((tab) => {
-            const list = window.data[tab] || [];
+        Object.keys(window.imageData).forEach((tab) => {
+            const list = window.imageData[tab] || [];
             list.forEach((item) => allImages.push(item));
         });
 
@@ -50,8 +86,8 @@
         const results = allImages.filter((item) => {
             const text = `
         ${item.title || ""}
-        ${item.description || ""}
-        ${(item.tags || []).join(" ")}
+        ${item.subtitle || ""}
+        ${item.keywords || ""}
       `.toLowerCase();
             return text.includes(keyword);
         });
@@ -70,12 +106,15 @@
                 const card = document.createElement("div");
                 card.className = "image-card";
                 card.innerHTML = `
-          <img src="${item.image}" alt="${item.title || ""}" loading="lazy" decoding="async">
+          <img src="${item.url}" alt="${item.title || ""}" loading="lazy" decoding="async">
           <div class="image-card-body">
             <div class="image-card-title">${item.title || ""}</div>
-            <div class="image-card-text">${item.description || ""}</div>
+            <div class="image-card-text">${item.subtitle || ""}</div>
             <div class="image-tags">
-              ${(item.tags || [])
+              ${(item.keywords || "")
+                        .split("、")
+                        .map((t) => t.trim())
+                        .filter(Boolean)
                         .map((t) => `<span class="tag">${t}</span>`)
                         .join("")}
             </div>
