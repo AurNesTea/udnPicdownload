@@ -1,5 +1,8 @@
 name: 自動更新圖庫資料
 
+permissions:
+  contents: write
+
 on:
   schedule:
     # 每日中午12點執行 (UTC+8 = UTC+0 的 04:00)
@@ -15,6 +18,8 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        persist-credentials: true
+        fetch-depth: 0
     
     - name: 設定 Python 環境
       uses: actions/setup-python@v4
