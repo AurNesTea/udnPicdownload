@@ -211,7 +211,11 @@ const imageData = {{
         
         # 組合完整內容
         content = header + "\n".join(content_parts)
-        content = content.rstrip(",\n") + "\n};"
+        content = content.rstrip(",\n") + "\n};\n\n" \
+            "// 確保 imageData 在全域作用域中可存取（供 search-all.js 使用）\n" \
+            "if (typeof window !== \"undefined\") {\n" \
+            "    window.imageData = imageData;\n" \
+            "}\n"
         
         return content
     
