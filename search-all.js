@@ -47,8 +47,19 @@
             // 先切換 UI 到搜尋模式，避免渲染完成但畫面仍停在分頁視圖
             enterSearchMode();
 
-            // 檢查 imageData 是否存在
-            const imageDataToUse = window?.imageData;
+            // 先嘗試從 window 取得 imageData，若未掛載則試著抓取全域常數
+            let imageDataToUse = window?.imageData;
+            if (!imageDataToUse) {
+                try {
+                    if (typeof imageData !== "undefined") {
+                        imageDataToUse = imageData;
+                        window.imageData = imageDataToUse; // 順便補掛到 window，避免之後再失敗
+                        console.info("[search-all.js] 已從全域常數補掛 window.imageData");
+                    }
+                } catch (err) {
+                    console.warn("[search-all.js] 無法直接存取全域 imageData", err);
+                }
+            }
             
             // 檢查 imageData 是否有效（必須是物件，且不是陣列）
             if (!imageDataToUse || typeof imageDataToUse !== "object" || Array.isArray(imageDataToUse)) {
