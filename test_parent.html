@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Parent</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        iframe {
+            width: 100%;
+            border: 2px solid red;
+            /* To see the iframe clearly */
+            transition: height 0.2s;
+        }
+
+        #log {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow: auto;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Parent Page Simulation</h1>
+    <p>The red border indicates the iframe boundary. It should resize automatically.</p>
+    <iframe src="index.html" id="myIframe" scrolling="no"></iframe>
+
+    <h3>Message Log</h3>
+    <div id="log">Waiting for messages...</div>
+
+    <script>
+        const iframe = document.getElementById('myIframe');
+        const log = document.getElementById('log');
+
+        window.addEventListener('message', function (e) {
+            // Log all messages for debugging
+            console.log('Parent received message:', e.data);
+
+            if (e.data && e.data.type === 'resize') {
+                const height = e.data.height;
+                log.innerText = `[${new Date().toLocaleTimeString()}] Received resize: ${height}px\n` + log.innerText;
+                if (iframe.style.height !== height + 'px') {
+                    iframe.style.height = height + 'px';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+# 前端開發進度紀錄
+
+## 2026-02-11
+### 🛠️ 任務：移除 Modal 自定義定位與樣式調整
+
+#### 變更摘要
+1. **移除 Modal 跟隨點擊位置功能 (Revert to Default)**
+   - **原因**：自定義定位導致 Modal 在某些情況下位置異常或被截斷，改回 Bootstrap 原生 Modal 行為以確保穩定性。
+   - **修改檔案**：
+     - `app.js`: 移除了計算 `getBoundingClientRect` 並設定 `modalEl.style.top` 的程式碼區塊。
+     - `index.html`: 移除了 `.modal { position: absolute !important; }` 的 CSS 樣式。
+
+2. **保留手機版 RWD 優化**
+   - **決策**：保留針對 `.description-block` 在 `max-width: 768px` 下的樣式調整。
+   - **原因**：確保手機版閱讀體驗良好，維持適當的邊距與文字大小。
+   - **相關代碼** (`index.html`):
+     ```css
+     @media (max-width: 768px) {
+         .description-block {
+             margin: 0 0.5rem;
+             padding: 1rem;
+             border-radius: 0;
+         }
+         .description-content p {
+             font-size: 16px;
+         }
+     }
+     ```
+
+#### 目前狀態
+- **Modal 行為**：已恢復為螢幕置中顯示（Bootstrap 預設），不再受點擊位置影響。
+- **手機版顯示**：描述區塊樣式已優化，閱讀體驗良好。
+- **功能測試**：圖片下載、申請表單流程均正常運作。
+
+#### 下一步建議
+- 檢查圖片載入效能與 Lazy Loading 行為。
+- 優化按鈕互動回饋（如 Hover 效果）。
+- 部署至測試環境進行多裝置驗證。

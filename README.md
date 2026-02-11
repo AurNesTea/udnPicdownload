@@ -1,21 +1,21 @@
 # 新醫情圖庫
 
-## 📋 專案說明
+## 專案說明
 因需要嵌入至feversocial後台嵌入區塊，但該區塊有5000字長度限制，因此修改了原始檔案結構，同時部署至github，後續可以iframe方式嵌入，解決原始版本 JavaScript 超過 5000 字限制的問題。
 
-## ✅ 優化成果
+## 優化成果
 
 ### **Embed 限制解決**：
-- **原始版本**: JavaScript 64,177 字元 ❌ (超過限制 12.8 倍)
-- **優化版本**: JavaScript 0 字元 ✅ (完全符合限制)
+- **原始版本**: JavaScript 64,177 字元 (超過限制 12.8 倍)
+- **優化版本**: JavaScript 0 字元 (完全符合限制)
 
 ### **檔案大小對比**：
 | 版本 | 總大小 | JavaScript 字數 | 狀態 |
 |------|--------|----------------|------|
-| 原始 | 82.9KB | 64,177 字元 | ❌ 超過限制 |
-| 優化 | 74.9KB | 0 字元 | ✅ 符合限制 |
+| 原始 | 82.9KB | 64,177 字元 | 超過限制 |
+| 優化 | 74.9KB | 0 字元 | 符合限制 |
 
-## 🛠️ 技術架構
+## 技術架構
 
 ### **分離式架構**：
 - **HTML**: 純結構和樣式 (index.html)
@@ -27,7 +27,7 @@
 - Bootstrap 5.3.0 (CDN)
 - Bootstrap Icons 1.10.0 (CDN)
 
-## 🚀 快速開始
+## 快速開始
 
 ### 部署使用
 1. 將 `index.html`、`data.js`、`app.js`、`search-all.js` 檔案上傳到 HTTPS 伺服器
@@ -50,7 +50,7 @@ cd scripts
 python update_data_auto.py
 ```
 
-## 📁 專案結構
+## 專案結構
 
 ```
 udnPicdownload/
@@ -76,19 +76,19 @@ udnPicdownload/
     └── update-data.yml     # 自動更新工作流程
 ```
 
-## ✨ 主要功能
+## 主要功能
 
-- ✅ **5個主題分類**: 健康促進、社會連結、世代共融、友善環境、永續發展
-- ✅ **響應式設計**: 適配各種螢幕尺寸
-- ✅ **全站整合搜尋**: 跨分類關鍵字搜尋，顯示所有符合條件的圖片
-- ✅ **分類內搜尋**: 各分類頁籤內支援關鍵字過濾
-- ✅ **分批載入**: 每次載入20張圖片，提升效能
-- ✅ **圖片下載**: 支援 Blob 下載功能
-- ✅ **自動更新**: 從 Google Sheets 自動同步資料
-- ✅ **編碼修正**: 解決繁體中文編碼問題
-- ✅ **錯誤日誌**: 前端錯誤自動發送到後端並記錄到 `logs/front_logs.log` 檔案
+- **5個主題分類**: 健康促進、社會連結、世代共融、友善環境、永續發展
+- **響應式設計**: 適配各種螢幕尺寸
+- **全站整合搜尋**: 跨分類關鍵字搜尋，顯示所有符合條件的圖片
+- **分類內搜尋**: 各分類頁籤內支援關鍵字過濾
+- **分批載入**: 每次載入20張圖片，提升效能
+- **圖片下載**: 支援 Blob 下載功能
+- **自動更新**: 從 Google Sheets 自動同步資料
+- **編碼修正**: 解決繁體中文編碼問題
+- **錯誤日誌**: 前端錯誤自動發送到後端並記錄到 `logs/front_logs.log` 檔案
 
-## 📊 資料統計
+## 資料統計
 
 - **健康促進**: 94張圖片
 - **社會連結**: 57張圖片
@@ -97,7 +97,7 @@ udnPicdownload/
 - **永續發展**: 6張圖片
 - **總計**: 191張圖片
 
-## 🔄 資料更新系統
+## 資料更新系統
 
 ### **自動更新機制**
 系統具備完整的資料更新機制，可從 Google Sheets 自動讀取最新資料並更新 `data.js` 檔案。
@@ -140,7 +140,7 @@ udnPicdownload/
 2. 選擇 "自動更新圖庫資料" 工作流程
 3. 點擊 "Run workflow" 按鈕
 
-## 🔧 維護說明
+## 維護說明
 
 ### **更新圖片資料**：
 1. 使用 `scripts/update_data_auto.py` 腳本自動更新
@@ -153,7 +153,7 @@ udnPicdownload/
 2. 保持函數名稱和事件綁定不變
 3. 重新上傳檔案
 
-## 🔧 故障排除
+## 故障排除
 
 ### **常見問題**
 
@@ -174,6 +174,21 @@ udnPicdownload/
    - 已處理 UTF-8 with BOM 與常見亂碼樣態
    - 關鍵字自動正規化：統一分隔符為「、」，移除連續分隔與前後多餘符號
    - 無效圖片 URL 會被略過並記錄於日誌
+
+5. **搜尋功能顯示「搜尋結果有誤」**
+   - **原因**：`data.js` 檔案缺少 `window.imageData` 的全域變數掛載
+   - **檢查方式**：在瀏覽器 Console 輸入 `window.imageData`，若顯示 `undefined` 則代表缺少掛載
+   - **解決方法**：
+     - 確認 `data.js` 檔案末尾是否包含以下程式碼：
+       ```javascript
+       // 確保 imageData 在全域作用域中可存取（供 search-all.js 使用）
+       if (typeof window !== "undefined") {
+           window.imageData = imageData;
+       }
+       ```
+     - 若缺少，請重新執行 `python scripts/update_data_auto.py` 更新檔案
+     - 部署後清除瀏覽器快取或執行硬重整（Ctrl+Shift+R / Cmd+Shift+R）
+   - **預防措施**：v1.9 版本已修正自動更新腳本並加入 fallback 機制，未來不會再出現此問題
 
 ### **日誌與備份**
 更新過程會產生 `logs/update_data.log` 日誌檔案，並自動將舊版 `data.js` 備份到 `backups/` 目錄。包含：
@@ -203,7 +218,38 @@ python log_server.py [埠號]
 - 若無後端服務，前端會靜默處理錯誤，不影響使用者體驗
 - 日誌格式類似 `update_data.log`：`YYYY-MM-DD HH:MM:SS - ERROR - [檔案名] 錯誤訊息 | URL: ... | UserAgent: ...`
 
-## 🔄 最新更新 (v1.8)
+## 最新更新 (v1.9)
+
+### **重大修正**：
+- **修正資料同步問題** (`data.js`, `update_data_auto.py`, `update_data_backup.py`)：
+  - **問題根因**：11/25 自動更新產生的 `data.js` 缺少 `window.imageData` 的全域掛載程式碼，導致搜尋功能無法讀取資料
+  - **解決方案**：修正 Python 更新腳本，確保每次自動生成 `data.js` 時都會在檔案結尾加上：
+    ```javascript
+    // 確保 imageData 在全域作用域中可存取（供 search-all.js 使用）
+    if (typeof window !== "undefined") {
+        window.imageData = imageData;
+    }
+    ```
+  - 同時修正 `update_data_auto.py` 和 `update_data_backup.py` 兩個腳本，避免未來再次發生
+
+- **強化搜尋功能容錯** (`search-all.js`)：
+  - 新增 fallback 機制：當 `window.imageData` 不存在時，自動從全域常數 `imageData` 讀取並補掛到 `window`
+  - 避免因檔案載入時序或快取問題導致搜尋功能失效
+  - 加入更友善的錯誤提示與 console 資訊，便於診斷問題
+
+### **技術說明**：
+此次問題的完整流程：
+1. **資料生成問題**：自動更新腳本產生的 `data.js` 缺少將 `imageData` 掛載到 `window` 的程式碼
+2. **部分功能正常**：`app.js` 直接使用全域變數 `imageData`，所以首頁圖片載入正常
+3. **搜尋功能失效**：`search-all.js` 僅從 `window.imageData` 讀取資料，因為 `window.imageData` 為 `undefined` 而觸發錯誤訊息「搜尋結果有誤，請聯繫管理員」
+4. **快取延遲**：即使修正程式碼後，部署端可能仍快取舊版檔案，需清除快取或等待 CDN 更新
+
+### **預防措施**：
+- 修正資料生成腳本，確保每次都會產生完整的 `data.js`
+- 搜尋功能加入 fallback，即使檔案同步延遲也能正常運作
+- 提供詳細的 console 資訊，方便未來問題診斷
+
+## 歷史更新 (v1.8)
 
 ### **Bug 修正**：
 - **修正搜尋功能數據載入問題** (`search-all.js`, `data.js`)：
@@ -237,7 +283,7 @@ python log_server.py [埠號]
   - 改進資料載入檢查機制，防止因資料未就緒導致的錯誤
   - 優化搜尋結果的渲染邏輯
 
-## 🔄 歷史更新 (v1.7)
+## 歷史更新 (v1.7)
 
 ### **Bug 修正**：
 - **修正搜尋功能數據結構錯誤** (`search-all.js`)：
@@ -263,7 +309,7 @@ python log_server.py [埠號]
   - 後端接收後寫入 `logs/front_logs.log` 檔案
   - 提供 Python 後端伺服器範例 (`scripts/log_server.py`)
 
-## 🔄 歷史更新 (v1.6)
+## 歷史更新 (v1.6)
 
 ### **系統優化**：
 - 日誌路徑統一為 `logs/update_data.log`；備份統一於 `backups/`
@@ -313,23 +359,23 @@ python log_server.py [埠號]
 - 新增 CSS 樣式類別：`.description-block`、`.description-content`
 - 響應式設計優化：手機版樣式調整
 
-## 🎯 使用建議
+## 使用建議
 
 ### **Embed 平台**：
-- ✅ 完全符合 5000 字限制
-- ✅ 支援 HTTPS 外部檔案引用
-- ✅ 響應式設計適配各種螢幕
+- 完全符合 5000 字限制
+- 支援 HTTPS 外部檔案引用
+- 響應式設計適配各種螢幕
 
 ### **瀏覽器相容性**：
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Safari 14+
-- ✅ Edge 90+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
 
 ### **下載功能**：
-- ✅ 支援直接下載圖片檔案
-- ✅ 自動偵測檔案副檔名
-- ✅ CORS 限制時提供後備方案
+- 支援直接下載圖片檔案
+- 自動偵測檔案副檔名
+- CORS 限制時提供後備方案
 
 ### **推薦使用方式**：
 1. **本機測試**: 使用 `scripts/update_data_auto.py`
@@ -340,7 +386,7 @@ python log_server.py [埠號]
 - 更新過程會產生詳細日誌到 `logs/` 目錄
 - 建議在更新前檢查 Google Sheets 資料完整性
 
-## 🛠️ 技術規格
+## 技術規格
 
 - **前端**: HTML5, CSS3, JavaScript (ES6+)
 - **框架**: Bootstrap 5.3.0
@@ -349,7 +395,7 @@ python log_server.py [埠號]
 - **資料來源**: Google Sheets API
 - **部署**: GitHub Pages / HTTPS 伺服器
 
-## 📞 支援
+## 支援
 
 如有問題，請檢查：
 1. 日誌檔案 `logs/update_data.log`（資料更新日誌）
@@ -358,13 +404,13 @@ python log_server.py [埠號]
 4. Google Sheets 資料格式（表頭建議：主編號、編號、主題、次主題（圖名）、圖片URL/URL、關鍵字、使用限制）
 5. 瀏覽器 Console 錯誤訊息
 
-## 🔄 更新時間
+## 更新時間
 
 - **自動更新**: 每日中午12點
 - **手動更新**: 隨時可執行
 - **GitHub 部署**: 自動觸發
 
 ---
-**版本**: v1.8  
-**更新日期**: 2025年1月31日  
+**版本**: v1.9  
+**更新日期**: 2025年11月25日  
 **維護者**: Kevin Tsai

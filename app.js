@@ -12,7 +12,7 @@ function isValidUrl(url) {
 }
 
 // 初始化頁面
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeTabs();
     // setupSearch(); // 已由 search-all.js 處理全站搜尋功能，不再需要分頁內搜尋
     setupLoadMoreButtons();
@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeTabs() {
     const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
     tabButtons.forEach(button => {
-        button.addEventListener('shown.bs.tab', function(event) {
+        button.addEventListener('shown.bs.tab', function (event) {
             const targetTab = event.target.getAttribute('data-bs-target').replace('#', '');
             const tabNumber = targetTab.replace('tab', '');
-            
+
             if (currentDisplayCount[tabNumber] === 0) {
                 loadImagesForTab(tabNumber);
             }
@@ -45,9 +45,9 @@ function loadImagesForTab(tabNumber) {
     const images = imageData[tabNumber] || [];
     const startIndex = currentDisplayCount[tabNumber];
     const endIndex = Math.min(startIndex + itemsPerLoad, images.length);
-    
+
     showLoading(tabNumber);
-    
+
     setTimeout(() => {
         for (let i = startIndex; i < endIndex; i++) {
             const image = images[i];
@@ -58,7 +58,7 @@ function loadImagesForTab(tabNumber) {
             const imageCard = createImageCard(image);
             grid.appendChild(imageCard);
         }
-        
+
         currentDisplayCount[tabNumber] = endIndex;
         hideLoading(tabNumber);
         updateLoadMoreButton(tabNumber);
@@ -70,11 +70,11 @@ function createImageCard(image) {
     const card = document.createElement('div');
     card.className = 'image-card';
     card.setAttribute('data-image-id', image.id);
-    
+
     card.innerHTML = `
         <img src="${image.url}" alt="${image.title}" loading="lazy">
     `;
-    
+
     card.addEventListener('click', () => openImageModal(image));
     return card;
 }
@@ -109,11 +109,11 @@ function openImageModal(image) {
 
     // 判斷是否需要申請
     const needApply = /申請/.test(String(image.restriction || ''));
-    
+
     if (needApply) {
         // 需要申請：檢查是否已申請
         const hasApplied = checkApplicationStatus(image.id);
-        
+
         if (hasApplied) {
             // 已申請：顯示下載表單
             applyBox.style.display = 'none';
@@ -152,21 +152,21 @@ document.getElementById('imageModal').addEventListener('hidden.bs.modal', functi
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
-    
+
     function performSearch() {
         const query = searchInput.value.trim().toLowerCase();
         if (query === '') {
             resetAllTabs();
             return;
         }
-        
+
         for (let tabNumber = 1; tabNumber <= 5; tabNumber++) {
             searchInTab(tabNumber, query);
         }
     }
-    
+
     searchBtn.addEventListener('click', performSearch);
-    searchInput.addEventListener('keypress', function(e) {
+    searchInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             performSearch();
         }
@@ -177,19 +177,19 @@ function setupSearch() {
 function searchInTab(tabNumber, query) {
     const grid = document.getElementById(`grid${tabNumber}`);
     const images = imageData[tabNumber] || [];
-    
+
     grid.innerHTML = '';
-    
+
     const filteredImages = images.filter(image => {
         const searchText = `${image.title} ${image.subtitle} ${image.keywords}`.toLowerCase();
         return searchText.includes(query) && isValidUrl(image.url);
     });
-    
+
     filteredImages.forEach(image => {
         const imageCard = createImageCard(image);
         grid.appendChild(imageCard);
     });
-    
+
     document.getElementById(`loadMore${tabNumber}`).style.display = 'none';
 }
 
@@ -201,7 +201,7 @@ function resetAllTabs() {
         currentDisplayCount[tabNumber] = 0;
         document.getElementById(`loadMore${tabNumber}`).style.display = 'block';
     }
-    
+
     const activeTab = document.querySelector('.nav-link.active');
     const activeTabNumber = activeTab.getAttribute('data-bs-target').replace('#tab', '');
     loadImagesForTab(activeTabNumber);
@@ -221,7 +221,7 @@ function setupLoadMoreButtons() {
 function updateLoadMoreButton(tabNumber) {
     const button = document.getElementById(`loadMore${tabNumber}`);
     const images = imageData[tabNumber] || [];
-    
+
     if (currentDisplayCount[tabNumber] < images.length) {
         button.style.display = 'block';
         const remaining = images.length - currentDisplayCount[tabNumber];
@@ -242,7 +242,7 @@ function hideLoading(tabNumber) {
 }
 
 // 下載圖片 
-(function(){
+(function () {
     const btn = document.getElementById('downloadBtn');
     if (!btn) return;
 
@@ -273,13 +273,13 @@ function hideLoading(tabNumber) {
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = `medical_image_${String(imageId).replace(/[^\w.-]+/g,'_')}.${ext}`;
+            a.download = `medical_image_${String(imageId).replace(/[^\w.-]+/g, '_')}.${ext}`;
             document.body.appendChild(a);
             a.click();
             a.remove();
             URL.revokeObjectURL(url);
 
-            showToast('圖片下載成功！','success');
+            showToast('圖片下載成功！', 'success');
         } catch (e) {
             // 後備：在新分頁開啟，給使用者另存
             const a = document.createElement('a');
@@ -289,7 +289,7 @@ function hideLoading(tabNumber) {
             document.body.appendChild(a);
             a.click();
             a.remove();
-            showToast('來源未開放跨域下載，已改在新分頁開啟。','info');
+            showToast('來源未開放跨域下載，已改在新分頁開啟。', 'info');
             console.error('download error:', e);
         }
 
@@ -315,38 +315,38 @@ function markImageAsApplied(imageId) {
 }
 
 // 申請表單
-document.getElementById('applyBtn').addEventListener('click', function() {
+document.getElementById('applyBtn').addEventListener('click', function () {
     const imageId = this.getAttribute('data-image-id') || this.dataset.imageId;
-    
+
     if (!imageId) {
         console.error('無法獲取圖片 ID');
         showToast('申請失敗：無法識別圖片', 'error');
         return;
     }
-    
+
     // 開啟 Google 問卷 Modal
     const formModal = new bootstrap.Modal(document.getElementById('formModal'));
     formModal.show();
-    
+
     // 記錄申請的圖片 ID
     sessionStorage.setItem('pendingApplication', imageId);
-    
+
     showToast(`已開啟申請表單，請填寫完整資訊`, 'info');
 });
 
 // 監聽表單 Modal 關閉事件
-document.getElementById('formModal').addEventListener('hidden.bs.modal', function() {
+document.getElementById('formModal').addEventListener('hidden.bs.modal', function () {
     const pendingImageId = sessionStorage.getItem('pendingApplication');
     if (pendingImageId) {
         // 模擬表單填寫完成（實際應用中需要更複雜的驗證邏輯）
         markImageAsApplied(pendingImageId);
         sessionStorage.removeItem('pendingApplication');
-        
+
         showToast('申請表單已提交，現在可以下載圖片了！', 'success');
-        
+
         // 確保移除所有 modal-backdrop
         removeAllModalBackdrops();
-        
+
         // 重新開啟圖片 Modal 以更新按鈕狀態
         setTimeout(() => {
             const currentImage = getCurrentImageById(pendingImageId);
@@ -389,20 +389,56 @@ function showToast(message, type = 'info') {
     toast.setAttribute('role', 'alert');
     toast.setAttribute('aria-live', 'assertive');
     toast.setAttribute('aria-atomic', 'true');
-    
+
     toast.innerHTML = `
         <div class="d-flex">
             <div class="toast-body">${message}</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     `;
-    
+
     document.body.appendChild(toast);
-    
+
     const bsToast = new bootstrap.Toast(toast);
     bsToast.show();
-    
+
     toast.addEventListener('hidden.bs.toast', () => {
         toast.remove();
     });
 }
+
+// ==========================================
+// Iframe Auto-Resize Logic
+// ==========================================
+(function () {
+    // Function to report height
+    function sendHeight() {
+        // Only if embedded
+        if (window.self === window.top) return;
+
+        const body = document.body;
+        const html = document.documentElement;
+
+        const height = Math.max(
+            body.scrollHeight, body.offsetHeight,
+            html.clientHeight, html.scrollHeight, html.offsetHeight
+        );
+
+        window.parent.postMessage({
+            type: 'resize',
+            height: height
+        }, '*');
+    }
+
+    // Initial check
+    window.addEventListener('load', sendHeight);
+    window.addEventListener('resize', sendHeight);
+
+    // Watch for DOM changes (images loading, tabs switching, etc.)
+    const resizeObserver = new ResizeObserver(() => {
+        sendHeight();
+    });
+
+    // Ideally watch the wrapper of the content
+    resizeObserver.observe(document.body);
+})();
