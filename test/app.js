@@ -49,7 +49,21 @@ function loadInitialImages() {
 // 為指定頁籤載入圖片
 function loadImagesForTab(tabNumber) {
     const grid = document.getElementById(`grid${tabNumber}`);
-    const images = imageData[tabNumber] || [];
+
+    // 取得資料來源，支援多種載入方式
+    let activeData = null;
+    try {
+        activeData = (typeof imageData !== 'undefined') ? imageData : window.imageData;
+    } catch (e) {
+        activeData = window.imageData;
+    }
+
+    if (!activeData || !activeData[tabNumber]) {
+        console.warn(`[Gallery] 無法讀取頁籤 ${tabNumber} 的圖片資料`, activeData);
+        return;
+    }
+
+    const images = activeData[tabNumber];
     const startIndex = currentDisplayCount[tabNumber];
     const endIndex = Math.min(startIndex + itemsPerLoad, images.length);
 
