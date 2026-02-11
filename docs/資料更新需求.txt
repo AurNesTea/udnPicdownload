@@ -1,0 +1,11 @@
+資料表單連結：https://docs.google.com/spreadsheets/d/1U98cnItKs0hkKLY-l7kGuKxIM0Mf6DBRPSzBHxTI0EY/edit?gid=1594065956#gid=1594065956
+id: "A001", 英文字母對應表單["主編號"]欄位；數字對應表單["編號"]欄位，不足位數請補0對齊現有圖片編號
+url: 對應表單 ["URL"] 欄位
+title: 對應表單 ["主題"] 欄位
+subtitle: 對應表單 ["次主題（圖名）"] 欄位
+keywords: 對應表單 ["關鍵字（、區隔）"] 欄位
+restriction: 對應表單 ["使用限制"] 欄位
+
+更新時間：
+1. 每日中午12點
+2. 手動更新

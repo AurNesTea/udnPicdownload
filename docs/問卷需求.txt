@@ -1,0 +1,10 @@
+問卷表單
+google 問卷 https://docs.google.com/forms/d/e/1FAIpQLSd7mHTJ9dPWKkUMHFvXlQYumqnqILuKe0YVJ0hrlZg1ywfjiw/viewform?usp=header 
+google sheet https://docs.google.com/spreadsheets/d/1KkXaq7JWozPvs_COTl_06AWhznyyxPh0gMhUoCsrrnQ/edit?usp=sharing
+
+流程概念
+data.js 檔案中 ["restriction"] 欄位如果標示 "限制",
+則該則圖片的「下載圖片」按鈕，文字說明改成「申請下載」
+點擊後先開啟frame內嵌google問卷
+當填寫完成後按鈕文字變成「下載圖片」，
+點擊後下載圖片
