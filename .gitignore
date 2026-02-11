@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project Backups
+backups/
+
+# Logs (keep directory, exclude files)
+logs/
+!logs/.gitkeep
+# (Optional: preserve specific important logs if needed)
+# !logs/front_logs.log
+
+# VS Code
+.vscode/
