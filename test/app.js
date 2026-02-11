@@ -12,12 +12,19 @@ function isValidUrl(url) {
 }
 
 // 初始化頁面
-document.addEventListener('DOMContentLoaded', function () {
+// 初始化頁面
+function initApp() {
     initializeTabs();
     // setupSearch(); // 已由 search-all.js 處理全站搜尋功能，不再需要分頁內搜尋
     setupLoadMoreButtons();
     loadInitialImages();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
 
 // 初始化頁籤
 function initializeTabs() {
@@ -259,11 +266,7 @@ function hideLoading(tabNumber) {
         btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>下載中...';
 
         try {
-            const res = await fetch(imageUrl, {
-                mode: 'cors',
-                cache: 'no-cache',
-                referrerPolicy: 'no-referrer'
-            });
+            const res = await fetch(imageUrl);
             // 某些來源會回 opaque（拿不到 blob）；當作失敗走備援
             if (!res.ok || res.type === 'opaque') throw new Error('CORS/opaque');
 
@@ -289,7 +292,7 @@ function hideLoading(tabNumber) {
             document.body.appendChild(a);
             a.click();
             a.remove();
-            showToast('來源未開放跨域下載，已改在新分頁開啟。', 'info');
+            showToast('因瀏覽器安全性限制無法直接下載，已為您在新分頁開啟圖片。', 'info');
             console.error('download error:', e);
         }
 
